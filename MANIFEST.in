@@ -1,0 +1,2 @@
+include README.md versioneer.py CHANGE_LOG LICENSE
+
