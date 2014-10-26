@@ -35,7 +35,6 @@ install:
 
 script:
     - cd ~ ; python -m gulinalg.testing -v -b
-    - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then python $HOME/impyla/tests/test_impala.py; fi
 
 notifications:
   email: true
