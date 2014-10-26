@@ -68,7 +68,7 @@ def inner1d(a, b, **kwargs):
     >>> res = inner1d(a,b)
     >>> res.shape
     (2,)
-    >>> print res
+    >>> print (res)
     [  7.  43.]
 
     """
@@ -116,7 +116,7 @@ def dotc1d(a, b, **kwargs):
     >>> res = inner1d(a,b)
     >>> res.shape
     (2,)
-    >>> print res
+    >>> print (res)
     [  7.  43.]
 
     """

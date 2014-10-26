@@ -23,7 +23,7 @@ from __future__ import division, absolute_import, print_function
 
 import numpy as np
 from . import _impl
-
+from .gufunc_general import matrix_multiply
 
 def det(a, **kwargs):
     """
@@ -388,7 +388,7 @@ def eigvals(a, **kwargs):
     Eigenvalues for a diagonal matrix are its diagonal elements
 
     >>> D = np.diag((-1,1))
-    >>> eigvals(D)
+    >>> np.sort(eigvals(D))
     array([-1.+0.j,  1.+0.j])
 
     Multiplying on the left by an orthogonal matrix, `Q`, and on the
@@ -399,7 +399,7 @@ def eigvals(a, **kwargs):
     >>> Q = np.array([[np.cos(x), -np.sin(x)], [np.sin(x), np.cos(x)]])
     >>> A = matrix_multiply(Q, D)
     >>> A = matrix_multiply(A, Q.T)
-    >>> eigvals(A)
+    >>> np.sort(eigvals(A))
     array([-1.+0.j,  1.+0.j])
 
     """

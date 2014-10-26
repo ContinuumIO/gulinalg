@@ -106,10 +106,9 @@ from .gufunc_linalg import (det, slogdet, cholesky, eig, eigvals, eigh,
 from .ufunc_extras import (add3, multiply3, multiply3_add, multiply_add,
                            multiply_add2, multiply4, multiply4_add)
 
+from .testing import test
+
 from ._version import get_versions
 __version__ = get_versions()['version']
 del get_versions
 
-
-def test():
-    pass
