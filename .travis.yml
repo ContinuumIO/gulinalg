@@ -7,12 +7,13 @@ python:
   - "3.3"
   - "3.4"
 
+NUMPY_VERSION:
+  - '1.8'
+  - '1.9'
+
 branches:
   only:
     - master
-    #- devel
-    #- release
-    #- devpatches
 
 before_install:
   # Install Miniconda
@@ -22,7 +23,7 @@ before_install:
   - export PATH=/home/travis/anaconda/bin:$PATH
   - conda update --yes conda
   # Setup environment
-  - conda create -n travisci --yes python=${TRAVIS_PYTHON_VERSION:0:3} numpy
+  - conda create -n travisci --yes python=${TRAVIS_PYTHON_VERSION:0:3} numpy=${NUMPY_VERSION}
   - source activate travisci
   # Install unittest2 for Python 2
   - if [ ${TRAVIS_PYTHON_VERSION:0:3} == "2.6" ]; then conda install --yes unittest2 argparse; fi
