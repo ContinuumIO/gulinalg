@@ -4,8 +4,8 @@ from __future__ import division, print_function, absolute_import
 # piggy-backs on NumPy configuration in order to link agains the
 # appropriate BLAS/LAPACK implementation.
 from numpy.distutils.core import setup, Extension
-from numpy.distutils.system_info import get_info as np_get_info
-import numpy
+from numpy.distutils import system_info as np_sys_info
+from numpy.distutils import misc_util as np_misc_util
 import os, sys, copy
 
 import versioneer
@@ -28,8 +28,7 @@ versioneer.parentdir_prefix = 'gulinalg-'
 MODULE_SOURCES = [os.path.join(C_SRC_PATH, 'gulinalg.c.src')]
 MODULE_DEPENDENCIES = copy.copy(MODULE_SOURCES)
 
-lapack_info = np_get_info('lapack_opt', 0)
-
+lapack_info = np_sys_info.get_info('lapack_opt', 0)
 lapack_lite_files = [os.path.join(LAPACK_LITE_PATH, f)
                      for f in ['python_xerbla.c', 'zlapack_lite.c',
                                'dlapack_lite.c', 'blas_lite.c',
@@ -48,10 +47,21 @@ else:
         MODULE_DEPENDENCIES.extend(lapack_lite_files[:1])
 
 
+
+npymath_info = np_misc_util.get_info('npymath')
+extra_opts = copy.deepcopy(lapack_info)
+
+for key, val in npymath_info.iteritems():
+    if extra_opts.get(key):
+        extra_opts[key].extend(val)
+    else:
+        extra_opts[key] = copy.deepcopy(val)
+
+
 gufunc_module = Extension('gulinalg._impl',
                           sources = MODULE_SOURCES,
                           depends = MODULE_DEPENDENCIES,
-                          **lapack_info)
+                          **extra_opts)
 
 packages = [
     'gulinalg',
