@@ -35,7 +35,7 @@ install:
     - python setup.py install -q >/dev/null
 
 script:
-    - cd ~ ; python -m gulinalg.testing -v -b
+    - cd ~ ; python -m gulinalg.testing -b
 
 notifications:
   email: true
