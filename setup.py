@@ -51,7 +51,7 @@ else:
 npymath_info = np_misc_util.get_info('npymath')
 extra_opts = copy.deepcopy(lapack_info)
 
-for key, val in npymath_info.iteritems():
+for key, val in npymath_info.items():
     if extra_opts.get(key):
         extra_opts[key].extend(val)
     else:
