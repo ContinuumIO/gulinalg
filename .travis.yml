@@ -1,0 +1,43 @@
+# References https://gist.github.com/dan-blanchard/7045057
+language: python
+
+python:
+  - "2.6"
+  - "2.7"
+  - "3.3"
+  - "3.4"
+
+branches:
+  only:
+    - master
+    #- devel
+    #- release
+    #- devpatches
+
+before_install:
+  # Install Miniconda
+  - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then wget http://repo.continuum.io/miniconda/Miniconda-2.2.2-Linux-x86_64.sh -O miniconda.sh; else wget http://repo.continuum.io/miniconda/Miniconda3-2.2.2-Linux-x86_64.sh -O miniconda.sh; fi
+  - chmod +x miniconda.sh
+  - ./miniconda.sh -b
+  - export PATH=/home/travis/anaconda/bin:$PATH
+  - conda update --yes conda
+  # Setup environment
+  - conda create -n travisci --yes python=${TRAVIS_PYTHON_VERSION:0:3} numpy
+  - source activate travisci
+  # Install unittest2 for Python 2
+  - if [ ${TRAVIS_PYTHON_VERSION:0:3} == "2.6" ]; then conda install --yes unittest2 argparse; fi
+
+install:
+    # Build extensions without silencing compile errors
+    - python setup.py build_ext -q
+    # Install
+    - python setup.py install -q >/dev/null
+
+script:
+    - cd ~ ; python -m gulinalg.testing -v -b
+    - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then python $HOME/impyla/tests/test_impala.py; fi
+
+notifications:
+  email: true
+  on_success: "change"
+  on_failure: "always" # "change"
