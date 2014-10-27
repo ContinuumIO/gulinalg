@@ -4451,12 +4451,6 @@ static struct PyModuleDef moduledef = {
 #define _STR(a) # a
 #define STR(a) _STR(a)
 
-#if defined(PY_MAJOR_VERSION >= 3)
-#  define PYTHON_STRING_FROM_C_STRING PyUnicode_FromString
-#else
-#  define PYTHON_STRING_FROM_C_STRING PyString_FromString
-#endif
-
 #if defined(NPY_PY3K)
 #define RETVAL m
 PyObject *
@@ -4485,7 +4479,7 @@ CONCAT(init, THIS_MODULE_NAME) (void)
 
     d = PyModule_GetDict(m);
 
-    version = PYTHON_STRING_FROM_C_STRING(_impl_version_string);
+    version = PyUnicode_FromString(_impl_version_string);
     PyDict_SetItemString(d, "__version__", version);
     Py_DECREF(version);
 
