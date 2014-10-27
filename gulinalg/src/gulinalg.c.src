@@ -4432,6 +4432,12 @@ static PyMethodDef UMath_LinAlgMethods[] = {
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
 
+
+#define _CONCAT(a,b) a ## b
+#define CONCAT(a,b) _CONCAT(a,b)
+#define _STR(a) # a
+#define STR(a) _STR(a)
+
 #if defined(IS_PY3K)
 static struct PyModuleDef moduledef = {
         PyModuleDef_HEAD_INIT,
@@ -4446,10 +4452,6 @@ static struct PyModuleDef moduledef = {
 };
 #endif
 
-#define _CONCAT(a,b) a ## b
-#define CONCAT(a,b) _CONCAT(a,b)
-#define _STR(a) # a
-#define STR(a) _STR(a)
 
 #if defined(IS_PY3K)
 #define RETVAL m
