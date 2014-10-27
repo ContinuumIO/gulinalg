@@ -11,10 +11,6 @@
 #include "numpy/arrayobject.h"
 #include "numpy/ufuncobject.h"
 
-/* #include "npy_3kcompat.h"*/
-
-/* #include "npy_config.h" */
-
 #include <stddef.h>
 #include <stdio.h>
 #include <assert.h>
@@ -4427,12 +4423,16 @@ addUfuncs(PyObject *dictionary) {
 
 /* -------------------------------------------------------------------------- */
                   /* Module initialization stuff  */
+#if PY_VERSION_HEX >= 0x03000000
+#  define IS_PY3K
+#endif
+
 
 static PyMethodDef UMath_LinAlgMethods[] = {
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
 
-#if defined(NPY_PY3K)
+#if defined(IS_PY3K)
 static struct PyModuleDef moduledef = {
         PyModuleDef_HEAD_INIT,
         STR(THIS_MODULE_NAME),
@@ -4451,7 +4451,7 @@ static struct PyModuleDef moduledef = {
 #define _STR(a) # a
 #define STR(a) _STR(a)
 
-#if defined(NPY_PY3K)
+#if defined(IS_PY3K)
 #define RETVAL m
 PyObject *
 CONCAT(PyInit_, THIS_MODULE_NAME)(void)
@@ -4466,7 +4466,7 @@ CONCAT(init, THIS_MODULE_NAME) (void)
     PyObject *version;
 
     init_constants();
-#if defined(NPY_PY3K)
+#if defined(IS_PY3K)
     m = PyModule_Create(&moduledef);
 #else
     m = Py_InitModule(STR(THIS_MODULE_NAME), UMath_LinAlgMethods);
