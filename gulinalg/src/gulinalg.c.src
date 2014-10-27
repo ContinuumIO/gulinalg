@@ -3444,8 +3444,7 @@ static inline @typ@
     fortran_int INCX = X_byte_step/sizeof(@ftyp@);
     fortran_int INCY = Y_byte_step/sizeof(@ftyp@);
 
-    @ftyp@_@dot@(&result, &N, X, &INCX, &Y, &INCY);
-
+    @ftyp@_@dot@(&result, &N, X, &INCX, Y, &INCY);
     return *(@typ@ *)&result;
 }
 
