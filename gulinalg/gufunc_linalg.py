@@ -229,7 +229,7 @@ def cholesky(a, UPLO='L', **kwargs):
 
     Examples
     --------
-    >>> A = np.array([[1,-2j],[2j,5]])
+    >>> A = np.array([[1,0-2j],[0+2j,5]])
     >>> A
     array([[ 1.+0.j,  0.-2.j],
            [ 0.+2.j,  5.+0.j]])
