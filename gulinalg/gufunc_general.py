@@ -54,7 +54,7 @@ def inner1d(a, b, **kwargs):
 
     For single and double types this is equivalent to dotc1d.
 
-    Maps to Blas functions sdot, ddot, cdotu and zdotu.
+    Maps to BLAS functions sdot, ddot, cdotu and zdotu.
 
     See Also
     --------
@@ -102,7 +102,7 @@ def dotc1d(a, b, **kwargs):
 
     For single and double types this is equivalent to inner1d.
 
-    Maps to Blas functions sdot, ddot, cdotc and zdotc.
+    Maps to BLAS functions sdot, ddot, cdotc and zdotc.
 
     See Also
     --------
