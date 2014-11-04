@@ -81,7 +81,7 @@ def multiply3(a, b, c, **kwargs):
 
     See Also
     --------
-    add3 : element-wise three-was addition
+    add3 : element-wise three-way addition
     multiply3_add : element-wise three-way multiplication and addition.
     multiply_add : element-wise multiply-add.
     multiply_add2 : element-wise multiplication with two additions.
@@ -101,8 +101,8 @@ def multiply3(a, b, c, **kwargs):
 
 def multiply3_add(a, b, c, d, **kwargs):
     """
-    Element-wise multiplication of 3 arrays adding an element
-    of the a 4th array to the result: a*b*c + d
+    Element-wise multiplication of 3 arrays adding a 4th array to the
+    result: a*b*c + d
 
     Parameters
     ----------
@@ -115,7 +115,7 @@ def multiply3_add(a, b, c, d, **kwargs):
     Returns
     -------
     m3a : (...) array
-        resulting element-wise addition
+        element-wise result (a*b*c + d)
 
     Notes
     -----
@@ -126,9 +126,8 @@ def multiply3_add(a, b, c, d, **kwargs):
 
     See Also
     --------
-    add3 : element-wise three-was addition
+    add3 : element-wise three-way addition
     multiply3 : element-wise three-way multiplication.
-    multiply3_add : element-wise three-way multiplication and addition.
     multiply_add : element-wise multiply-add.
     multiply_add2 : element-wise multiplication with two additions.
     multiply4 : element-wise four-way multiplication
@@ -147,17 +146,21 @@ def multiply3_add(a, b, c, d, **kwargs):
 
 def multiply_add(a, b, c, **kwargs):
     """
-    Element-wise addition of 3 arrays
+    Element-wise multiplication of 2 arrays, adding a 3rd array to the
+    result: a*b + c
 
     Parameters
     ----------
-    a, b, c : (...) array
-        arrays with the addends
+    a, b : (...) array
+        arrays with the factors
+
+    c : (...) array
+        array with the addend
 
     Returns
     -------
-    add3 : (...) array
-        resulting element-wise addition
+    madd : (...) array
+        element-wise result (a*b + c)
 
     Notes
     -----
@@ -168,10 +171,9 @@ def multiply_add(a, b, c, **kwargs):
 
     See Also
     --------
-    add3 : element-wise three-was addition
+    add3 : element-wise three-way addition
     multiply3 : element-wise three-way multiplication.
     multiply3_add : element-wise three-way multiplication and addition.
-    multiply_add : element-wise multiply-add.
     multiply_add2 : element-wise multiplication with two additions.
     multiply4 : element-wise four-way multiplication
     multiply4_add : element-wise four-way multiplication and addition,
@@ -189,17 +191,21 @@ def multiply_add(a, b, c, **kwargs):
 
 def multiply_add2(a, b, c, d, **kwargs):
     """
-    Element-wise addition of 3 arrays
+    Element-wise multiplication of 2 arrays, adding a 3rd and a 4th
+    array to the result: a*b + c + d
 
     Parameters
     ----------
-    a, b, c : (...) array
+    a, b : (...) array
+        arrays with the factors
+
+    c, d : (...) array
         arrays with the addends
 
     Returns
     -------
-    add3 : (...) array
-        resulting element-wise addition
+    mult_add2 : (...) array
+        element-wise result (a*b + c + d)
 
     Notes
     -----
@@ -210,11 +216,10 @@ def multiply_add2(a, b, c, d, **kwargs):
 
     See Also
     --------
-    add3 : element-wise three-was addition
+    add3 : element-wise three-way addition
     multiply3 : element-wise three-way multiplication.
     multiply3_add : element-wise three-way multiplication and addition.
     multiply_add : element-wise multiply-add.
-    multiply_add2 : element-wise multiplication with two additions.
     multiply4 : element-wise four-way multiplication
     multiply4_add : element-wise four-way multiplication and addition,
 
@@ -231,17 +236,17 @@ def multiply_add2(a, b, c, d, **kwargs):
 
 def multiply4(a, b, c, d, **kwargs):
     """
-    Element-wise addition of 3 arrays
+    Element-wise multiplication of 4 arrays: a*b*c*d
 
     Parameters
     ----------
-    a, b, c : (...) array
-        arrays with the addends
+    a, b, c, d : (...) array
+        arrays with the factors
 
     Returns
     -------
-    add3 : (...) array
-        resulting element-wise addition
+    m4 : (...) array
+        element-wise result (a*b*c*d)
 
     Notes
     -----
@@ -252,12 +257,11 @@ def multiply4(a, b, c, d, **kwargs):
 
     See Also
     --------
-    add3 : element-wise three-was addition
+    add3 : element-wise three-way addition
     multiply3 : element-wise three-way multiplication.
     multiply3_add : element-wise three-way multiplication and addition.
     multiply_add : element-wise multiply-add.
     multiply_add2 : element-wise multiplication with two additions.
-    multiply4 : element-wise four-way multiplication
     multiply4_add : element-wise four-way multiplication and addition,
 
     Examples
@@ -273,17 +277,21 @@ def multiply4(a, b, c, d, **kwargs):
 
 def multiply4_add(a, b, c, d, e, **kwargs):
     """
-    Element-wise addition of 3 arrays
+    Element-wise multiplication of 4 arrays, adding a 5th array to the
+    result: a*b*c*d + e
 
     Parameters
     ----------
-    a, b, c : (...) array
-        arrays with the addends
+    a, b, c, d : (...) array
+        arrays with the factors
+
+    e : (...) array
+        array with the addend
 
     Returns
     -------
     add3 : (...) array
-        resulting element-wise addition
+        element-wise result (a*b*c*d + e)
 
     Notes
     -----
@@ -294,13 +302,12 @@ def multiply4_add(a, b, c, d, e, **kwargs):
 
     See Also
     --------
-    add3 : element-wise three-was addition
+    add3 : element-wise three-way addition
     multiply3 : element-wise three-way multiplication.
     multiply3_add : element-wise three-way multiplication and addition.
     multiply_add : element-wise multiply-add.
     multiply_add2 : element-wise multiplication with two additions.
     multiply4 : element-wise four-way multiplication
-    multiply4_add : element-wise four-way multiplication and addition,
 
     Examples
     --------
