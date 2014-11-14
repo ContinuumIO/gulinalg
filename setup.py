@@ -65,6 +65,7 @@ gufunc_module = Extension('gulinalg._impl',
 
 packages = [
     'gulinalg',
+    'gulinalg.tests',
 ]
 
 ext_modules = [
