@@ -137,13 +137,13 @@ class TestMultiplyAdd(UfuncTestCase, TestCase):
     _test = [gulinalg.multiply_add, lambda x,y,z: x*y+z]
 
 class TestMultiplyAdd2(UfuncTestCase, TestCase):
-    _test = [gulinalg.multiply_add2, lambda x,y,z,u: x*y+z+u]
-"""
+    _test = [gulinalg.multiply_add2, lambda x,y,z,u: (x*y)+(z+u)]
+
 class TestMultiply4(UfuncTestCase, TestCase):
-    _test = [gulinalg.multiply4, lambda x,y,z,u: x*y*z*u]
+    _test = [gulinalg.multiply4, lambda x,y,z,u: (x*y)*(z*u)]
 
 class TestMultiply4Add(UfuncTestCase, TestCase):
-    _test = [gulinalg.multiply4_add, lambda x,y,z,u,v: x*y*x*u+v]
-"""
+    _test = [gulinalg.multiply4_add, lambda x,y,z,u,v: (x*y)*(z*u)+v]
+
 if __name__ == '__main__':
     run_module_suite()
