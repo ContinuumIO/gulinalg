@@ -10,7 +10,6 @@ all tests will be compared against the equivalent numpy expressions.
 """
 from __future__ import print_function
 
-
 from unittest import TestCase
 from itertools import izip
 
@@ -56,8 +55,8 @@ class UfuncTestCase(object):
         np.seterr(**self._old_err)
 
     def _check(self, args):
-        ufunc_result = self._test[0](*args)
-        reference_result = self._test[1](*args)
+        ufunc_result = np.atleast_1d(self._test[0](*args))
+        reference_result = np.atleast_1d(self._test[1](*args))
         assert_allclose_with_nans(reference_result, ufunc_result)
 
     def _mk_args(self, base_args, dtype, dims=1):
@@ -66,27 +65,27 @@ class UfuncTestCase(object):
         base_args = np.array(base_args, dtype=dtype)
         shape = [None, (256,), (16,16), (2,8,16)][dims]
         return [np.roll(base_args, arg)[_perm_idx].reshape(shape) for arg in range(nargs)]
-    """    
+
     def test_scalar_single(self):
         args = self._mk_args(_float_values, np.single)
-        for tup in izip(args):
-            self._check(*tup)
+        for tup in izip(*args):
+            self._check(tup)
 
     def test_scalar_double(self):
         args = self._mk_args(_float_values, np.double)
-        for tup in izip(args):
-            self._check(*tup)
+        for tup in izip(*args):
+            self._check(tup)
 
     def test_scalar_csingle(self):
         args = self._mk_args(_complex_values, np.csingle)
-        for tup in izip(args):
-            self._check(*tup)
+        for tup in izip(*args):
+            self._check(tup)
 
     def test_scalar_cdouble(self):
         args = self._mk_args(_complex_values, np.cdouble)
-        for tup in izip(args):
-            self._check(*tup)
-    """
+        for tup in izip(*args):
+            self._check(tup)
+
     def test_1d_single(self):
         self._check(self._mk_args(_float_values, np.single))
 
