@@ -66,8 +66,8 @@ def inner1d(a, b, **kwargs):
     >>> a = np.arange(1,5).reshape(2,2)
     >>> b = np.arange(1,8,2).reshape(2,2)
     >>> res = inner1d(a,b)
-    >>> res.shape
-    (2,)
+    >>> res.shape == (2,)
+    True
     >>> print (res)
     [  7.  43.]
 
@@ -114,8 +114,8 @@ def dotc1d(a, b, **kwargs):
     >>> a = np.arange(1,5).reshape(2,2)
     >>> b = np.arange(1,8,2).reshape(2,2)
     >>> res = inner1d(a,b)
-    >>> res.shape
-    (2,)
+    >>> res.shape == (2,)
+    True
     >>> print (res)
     [  7.  43.]
 
@@ -156,8 +156,8 @@ def innerwt(a, b, c, **kwargs):
     >>> b = np.arange(1,8,2).reshape(2,2)
     >>> c = np.arange(0.25,1.20,0.25).reshape(2,2)
     >>> res = innerwt(a,b,c)
-    >>> res.shape
-    (2,)
+    >>> res.shape == (2,)
+    True
     >>> res
     array([  3.25,  39.25])
 
@@ -195,8 +195,8 @@ def matrix_multiply(a,b,**kwargs):
     >>> a = np.arange(1,17).reshape(2,2,4)
     >>> b = np.arange(1,25).reshape(2,4,3)
     >>> res = matrix_multiply(a,b)
-    >>> res.shape
-    (2, 2, 3)
+    >>> res.shape == (2, 2, 3)
+    True
     >>> res
     array([[[   70.,    80.,    90.],
             [  158.,   184.,   210.]],

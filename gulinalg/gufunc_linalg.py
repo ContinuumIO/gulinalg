@@ -120,19 +120,19 @@ def slogdet(a, **kwargs):
 
     >>> a = np.array([[1, 2], [3, 4]])
     >>> (sign, logdet) = slogdet(a)
-    >>> sign.shape
-    ()
-    >>> logdet.shape
-    ()
+    >>> sign.shape == ()
+    True
+    >>> logdet.shape == ()
+    True
     >>> np.allclose(-2.0, sign * np.exp(logdet))
     True
 
     >>> a = np.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]] ])
     >>> (sign, logdet) = slogdet(a)
-    >>> sign.shape
-    (2,)
-    >>> logdet.shape
-    (2,)
+    >>> sign.shape == (2,)
+    True
+    >>> logdet.shape == (2,)
+    True
     >>> np.allclose(-2.0, sign * np.exp(logdet))
     True
 
@@ -659,8 +659,8 @@ def svd(a, full_matrices=1, compute_uv=1 ,**kw_args):
     Reconstruction based on full SVD:
 
     >>> U, s, V = svd(a, full_matrices=True)
-    >>> U.shape, V.shape, s.shape
-    ((9, 9), (6, 6), (6,))
+    >>> (U.shape, V.shape, s.shape) == ((9, 9), (6, 6), (6,))
+    True
     >>> S = np.zeros((9, 6), dtype=complex)
     >>> S[:6, :6] = np.diag(s)
     >>> np.allclose(a, np.dot(U, np.dot(S, V)))
@@ -669,8 +669,8 @@ def svd(a, full_matrices=1, compute_uv=1 ,**kw_args):
     Reconstruction based on reduced SVD:
 
     >>> U, s, V = svd(a, full_matrices=False)
-    >>> U.shape, V.shape, s.shape
-    ((9, 6), (6, 6), (6,))
+    >>> (U.shape, V.shape, s.shape) == ((9, 6), (6, 6), (6,))
+    True
     >>> S = np.diag(s)
     >>> np.allclose(a, np.dot(U, np.dot(S, V)))
     True
