@@ -1,0 +1,17 @@
+package:
+  name: gulinalg
+  version: "0.1.0"
+
+source:
+  path: ../..
+  #git_url: git@github.com:ContinuumIO/gulinalg.git
+  #git_tag: stable
+
+requirements:
+  build:
+    - python
+    - numpy
+  run:
+    - python
+    - numpy
+
