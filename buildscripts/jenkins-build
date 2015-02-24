@@ -22,7 +22,7 @@ if [ "${PYTHON_VERSION}" == "" ]; then
 fi
 
 # Require a version of NumPy to be selected
-if [ "${PYTHON_INTERPRETER}" == "" } ; then
+if [ "${PYTHON_INTERPRETER}" == "" ] ; then
    echo You must select a NumPy version with the NUMPY_VERSION variable
    exit 1
 fi
