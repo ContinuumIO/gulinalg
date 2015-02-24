@@ -11,7 +11,12 @@ all tests will be compared against the equivalent numpy expressions.
 from __future__ import print_function
 
 from unittest import TestCase
-from itertools import izip
+
+try:
+    from itertools import izip
+except ImportError:
+    # in python 3* map izip to zip
+    izip = zip
 
 import numpy as np
 from numpy.testing import TestCase, assert_allclose, run_module_suite
