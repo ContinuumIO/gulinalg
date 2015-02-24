@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# This is the jenkins build script for building/testing the gulinalg
+# module.
+#
+# In order to work, Jenkins should be configured such as:
+#  - Anaconda is installed in ~/anaconda
+#  - Jenkins build matrix is used for multiple platforms/python
+#    versions
+#  - Use XShell plugin to launch this script (on Windows, the
+#    .bat version will be executed instead)
+#  - Call the script from the root workspace directory as
+#    buildscripts/jenkins-build
+#
+
+set -x
+
+# Require a version of python to be selected
+if [ "${PYTHON_VERSION}" == "" ]; then
+  echo You must select a Python version with the PYTHON_VERSION variable
+  exit 1
+fi
+
+# Require a version of NumPy to be selected
+if [ "${PYTHON_INTERPRETER}" == "" } ; then
+   echo You must select a NumPy version with the NUMPY_VERSION variable
+   exit 1
+fi
+
+# use conda-build to build/test the package.
+~/anaconda/bin/conda build buildscripts/condarecipe --python ${PYTHON_INTERPRETER} --numpy ${NUMPY_VERSION}
