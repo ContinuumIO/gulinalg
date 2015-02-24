@@ -16,7 +16,7 @@ REM Require a version of python to be selected
 if "%PYTHON_VERSION%" == "" exit /b 1
 
 REM Require a version of NumPy to be selected
-if "%PYTHON_INTERPRETER%" == "" exit /b 1
+if "%NUMPY_VERSION%" == "" exit /b 1
 
 REM use conda-build to build/test the package.
-call C:\Anaconda\Scripts\conda build buildscripts/condarecipe --python %PYTHON_INTERPRETER% --numpy %NUMPY_VERSION%
+call C:\Anaconda\Scripts\conda build buildscripts/condarecipe --python %PYTHON_VERSION% --numpy %NUMPY_VERSION%

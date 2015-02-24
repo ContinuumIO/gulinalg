@@ -22,10 +22,10 @@ if [ "${PYTHON_VERSION}" == "" ]; then
 fi
 
 # Require a version of NumPy to be selected
-if [ "${PYTHON_INTERPRETER}" == "" ] ; then
+if [ "${NUMPY_VERSION}" == "" ] ; then
    echo You must select a NumPy version with the NUMPY_VERSION variable
    exit 1
 fi
 
 # use conda-build to build/test the package.
-~/anaconda/bin/conda build buildscripts/condarecipe --python ${PYTHON_INTERPRETER} --numpy ${NUMPY_VERSION}
+~/anaconda/bin/conda build buildscripts/condarecipe --python ${PYTHON_VERSION} --numpy ${NUMPY_VERSION}
