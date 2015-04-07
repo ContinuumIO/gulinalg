@@ -15,3 +15,6 @@ requirements:
     - python
     - numpy
 
+test:
+  requires:
+    - unittest2     [py26]

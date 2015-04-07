@@ -4,7 +4,13 @@ from __future__ import print_function, division, absolute_import
 import sys
 
 import numpy as np
-import unittest
+
+if sys.version_info[:2] <= (2, 6):
+    # fix compatibility issues with unittest
+    import unittest2 as unittest
+else:
+    import unittest
+
 
 def banner(title):
     print((' '+title+' ').center(72, '='))
