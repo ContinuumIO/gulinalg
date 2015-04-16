@@ -22,7 +22,11 @@
 #endif
 
 
-static const char* _impl_version_string = "0.1.4";
+/*
+  0.1.5 added STRICT_FP to detect non-conformant rounding in x87
+  0.1.4 started logging changes
+ */
+static const char* _impl_version_string = "0.1.5";
 
 /*
  ****************************************************************************
@@ -287,7 +291,7 @@ FNAME(zcopy)(int *n,
              f2c_doublecomplex *sx, int *incx,
              f2c_doublecomplex *sy, int *incy);
 
-extern float 
+extern float
 FNAME(sdot)(int *n,
             float *sx, int *incx,
             float *sy, int *incy);
@@ -1102,7 +1106,7 @@ static inline void
         int is1 = (int)(steps[0]/sot), is2 = (int)(steps[1]/sot);
         BEGIN_OUTER_LOOP_3
             @ftyp@ * ip1 = (@ftyp@*)args[0], *ip2 = (@ftyp@*)args[1];
-            /* 
+            /*
              * BLAS function expects data pointer to point to first element for
              * operand with negative stepping, and then adjusts pointer to point to
              * last element. However, this ufunc recieves pointer that already
@@ -4424,7 +4428,21 @@ addUfuncs(PyObject *dictionary) {
     }
 }
 
+/* -------------------------------------------------------------------------- */
 
+int
+check_strict_fp()
+{
+    /* check whether FP math is being performed with the appropriate roundings
+       or not. For example, many compilers for x87 do not follow strict IEEE-754
+       semantics as temporary values are kept in 'internal' (80-bit) precision.
+    */
+    float a = 1e+35;
+    float value = a * a / a;
+    /* if it was following strict IEEE-754 semantics, a*b will become inf, and
+       inf / a will be inf */
+    return value > 1e+36;
+}
 
 /* -------------------------------------------------------------------------- */
                   /* Module initialization stuff  */
@@ -4470,7 +4488,7 @@ CONCAT(init, THIS_MODULE_NAME) (void)
 {
     PyObject *m;
     PyObject *d;
-    PyObject *version;
+    PyObject *version, *strict_fp;
 
     init_constants();
 #if defined(IS_PY3K)
@@ -4489,6 +4507,10 @@ CONCAT(init, THIS_MODULE_NAME) (void)
     version = PyUnicode_FromString(_impl_version_string);
     PyDict_SetItemString(d, "__version__", version);
     Py_DECREF(version);
+
+    strict_fp = PyBool_FromLong(check_strict_fp());
+    PyDict_SetItemString(d, "STRICT_FP", strict_fp);
+    Py_DECREF(strict_fp);
 
     /* Load the ufunc operators into the module's namespace */
     addUfuncs(d);

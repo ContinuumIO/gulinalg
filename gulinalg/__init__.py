@@ -105,6 +105,7 @@ from .gufunc_linalg import (det, slogdet, cholesky, eig, eigvals, eigh,
                             eigvalsh, solve, svd, chosolve, inv, poinv)
 from .ufunc_extras import (add3, multiply3, multiply3_add, multiply_add,
                            multiply_add2, multiply4, multiply4_add)
+from ._impl import STRICT_FP
 
 from .testing import test
 

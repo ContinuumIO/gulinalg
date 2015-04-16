@@ -20,7 +20,8 @@ def assert_allclose_with_nans(lho, rho):
     mask1 = np.isfinite(lho)
     mask2 = np.isfinite(rho)
 
-    assert np.all(mask1 == mask2) #infinities in the same place
+    #infinities in the same place
+    assert np.all(mask1 == mask2)
 
     # all finite elements are "close"
     np.testing.assert_allclose(lho[mask1], rho[mask2])

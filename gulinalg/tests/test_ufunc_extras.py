@@ -24,17 +24,38 @@ import gulinalg
 from gulinalg.testing import assert_allclose_with_nans
 
 
-_float_values = [ 0.0, 1.0, -1.0, 42.3, -42.3, 1.2e-30, -1.2e-30, 1.666e+30,
-                  -1.666e+30, 1.45e-300, -1.45e-300, 1.0000000001,
-                  -1.0000000001, float('nan'), float('inf'), -float('inf')]
+if gulinalg.STRICT_FP:
+    # with strict fp it should be able to handle the ranges with results
+    # comparable to those of numpy
+    _float_values = [ 0.0, 1.0, -1.0, 42.3, -42.3, 1.2e-30, -1.2e-30, 1.666e+30,
+                      -1.666e+30, 1.45e-300, -1.45e-300, 1.0000000001,
+                      -1.0000000001, float('nan'), float('inf'), -float('inf')]
 
-_complex_values = [ 0.0 + 0.0j, 1.0 + 0.0j, -1.0 + 0.0j, 0.0 + 1.0j,
-                    -0.0 - 1.0j, 42.0 + 10.5j, -42.0 + 10.5j, 42.0 - 10.5j,
-                    -42.0 - 10.5j, 1.6e+300 + 1.3e-300, 1.6e+300 - 1.3e-300,
-                    -1.6e+300 + 1.3e-300, -1.6e+300 - 1.3e-300,
-                    float('nan')*(1.0+1.0j), float('inf')*(1.0+1.0j),
-                    float('inf')*(-1.0-1.0j) ]
+    _complex_values = [ 0.0 + 0.0j, 1.0 + 0.0j, -1.0 + 0.0j, 0.0 + 1.0j,
+                        -0.0 - 1.0j, 42.0 + 10.5j, -42.0 + 10.5j, 42.0 - 10.5j,
+                        -42.0 - 10.5j, 1.6e+300 + 1.3e-300, 1.6e+300 - 1.3e-300,
+                        -1.6e+300 + 1.3e-300, -1.6e+300 - 1.3e-300,
+                        float('nan')*(1.0+1.0j), float('inf')*(1.0+1.0j),
+                        float('inf')*(-1.0-1.0j) ]
+else:
+    # if not strict fp, this means the compiler is using an intermediate
+    # precision that is higher than indicated (this will happen for x87 FPU
+    # code, for example). This means that the random tests relying in these
+    # values could 'fail' because of precision difference (including not
+    # overflowing to inf). In this case, test without big exponents to avoid
+    # the problems.
+    _float_values = [ 0.0, 1.0, -1.0, 2.0, -2.0, 3.0, -3.0, 1.5, -1.5,
+                      2.5, -2.5, 1.125, -1.125, float('nan'), float('inf'),
+                      -float('inf')]
 
+    _complex_values = [ 0.0 + 0.0j, 1.0 + 0.0j, -1.0 + 0.0j, 0.0 + 1.0j,
+                        -0.0 - 1.0j, 42.0 + 10.5j, -42.0 + 10.5j, 42.0 - 10.5j,
+                        -42.0 - 10.5j, 1.6e+3 + 1.3e-3, 1.6e+3 - 1.3e-3,
+                        -1.6e+3 + 1.3e-3, -1.6e+3 - 1.3e-3,
+                        float('nan')*(1.0+1.0j), float('inf')*(1.0+1.0j),
+                        float('inf')*(-1.0-1.0j) ]
+
+    
 assert(len(_float_values) == 16)
 assert(len(_complex_values) == 16)
 
