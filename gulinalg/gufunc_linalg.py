@@ -821,7 +821,73 @@ def poinv(A, UPLO='L', **kw_args):
     else:
         gufunc = _impl.poinv_up
 
-    return gufunc(A, **kw_args);
+    return gufunc(A, **kw_args)
+
+
+def ldl(A, **kwargs):
+    """
+    LDL decomposition.
+
+    Compute the LDL decomposition `L * D * L.H` of the square matrix `a`
+    using the Bunch-Kaufman diagonal pivoting method.  `L` is a product of
+    permutation and unit lower-triangular matrices, D is Hermitian and block
+    diagonal with 1-by-1 and 2-by-2 diagonal blocks, and .H is the conjugate
+    transpose operator. `a` must be Hermitian, but need not be positive
+    definite.  When `a` is positive definite, D is strictly diagonal (without
+    2-by-2 blocks) and `L` is a true lower-triangular matrix.
+
+    Parameters
+    ----------
+    a : (..., M, M) array_like
+        Hermitian (symmetric if all elements are real) input matrix.
+
+    Returns
+    -------
+    L : (..., M, M) array_like
+        Permuted lower-triangular factor of `a`.  Returns a true unit lower-
+        triangular matrix if `a` is positive definite.  Returns a matrix object
+        if `a` is a matrix object.
+    D : (..., M, M) array_like
+        Hermitian block diagonal factor of `a`, with 1-by-1 and 2-by-2 blocks.
+        Returns a true diagonal matrix if `a` is positive definite.  Returns a
+        matrix object if `a` is a matrix object.
+
+    Raises
+    ------
+    LinAlgError
+       If the decomposition fails, for example, if `a` is singular or not
+        square.
+
+    Notes
+    -----
+    Broadcasting rules apply.
+
+    This is an interface to the _sytrf and _hetrf LAPACK routines, which use
+    the Bunch-Kaufman diagonal pivoting method [1]_ to factor the matrix `a`.
+
+    This function reconstructs the full `L` and `D` matrices from the combined
+    representation produced by the _sytrf and _hetrf functions.
+
+    For elements where the LAPACK routine fails, the result will be set
+    to NaNs.
+
+    Implemented for types single, double, csingle and cdouble. Numpy conversion
+    rules apply.
+
+    Examples
+    --------
+    >>> a = np.array([[4, 1], [1, 2]])
+    >>> l,d = ldl(a)
+    >>> np.allclose(matrix_multiply(l, matrix_multiply(d, l.T)), a)
+    True
+
+    References
+    ----------
+    .. [1] G. H. Golub and C. F. Van Loan, *Matrix Computations*, 4th Ed.
+           Baltimore, MD, Johns Hopkins University Press, 2013, pg. 192
+    """
+
+    return _impl.ldl(A, **kwargs)
 
 
 if __name__ == "__main__":
