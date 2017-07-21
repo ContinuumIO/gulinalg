@@ -871,6 +871,10 @@ linearize_@TYPE@_matrix(void *dst_in,
                               (void*)dst, &one);
             }
             else if (column_strides < 0) {
+                /* in BLAS, when stride is negative it will adjust the base
+                 * pointer so that based on the number of columns, So it needs
+                 * to be compensated before the call
+                 */
                 FNAME(@copy@)(&columns,
                               (void*)((@typ@*)src + (columns-1)*column_strides),
                               &column_strides,
@@ -879,8 +883,12 @@ linearize_@TYPE@_matrix(void *dst_in,
             else {
                 /*
                  * Zero stride has undefined behavior in some BLAS
-                 * implementations (e.g. OSX Accelerate), so do it
-                 * manually
+                 * implementations (e.g. OSX Accelerate), so do it manually.
+                 *
+                 * Note this code path would only happen when one of the
+                 * sources has broadcast inner dimensions.
+                 *
+                 * This is an unlikely case.
                  */
                 for (j = 0; j < columns; ++j) {
                     memcpy((@typ@*)dst + j, (@typ@*)src, sizeof(@typ@));
@@ -917,6 +925,10 @@ delinearize_@TYPE@_matrix(void *dst_in,
                               (void*)dst, &column_strides);
             }
             else if (column_strides < 0) {
+                /* in BLAS, when stride is negative it will adjust the base
+                 * pointer so that based on the number of columns, So it needs
+                 * to be compensated before the call
+                 */
                 FNAME(@copy@)(&columns,
                               (void*)src, &one,
                               (void*)((@typ@*)dst + (columns-1)*column_strides),
@@ -925,8 +937,13 @@ delinearize_@TYPE@_matrix(void *dst_in,
             else {
                 /*
                  * Zero stride has undefined behavior in some BLAS
-                 * implementations (e.g. OSX Accelerate), so do it
-                 * manually
+                 * implementations (e.g. OSX Accelerate), so do it manually.
+                 *
+                 * Note that this path is highly unlikely to be used at all and
+                 * could be very well be handled via something like an abort().
+                 *
+                 * This path means that the *target* array is in fact a
+                 * broadcast vector. I can't think on any sane use for that.
                  */
                 if (columns > 0) {
                     memcpy((@typ@*)dst, (@typ@*)src + (columns-1), sizeof(@typ@));
