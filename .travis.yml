@@ -2,37 +2,40 @@
 language: python
 
 python:
-  - "2.6"
   - "2.7"
-  - "3.3"
-  - "3.4"
+  - "3.6"
 
 env:
-  - NUMPY_VERSION='1.8'
-  - NUMPY_VERSION='1.9'
+  - NUMPY_VERSION='1.10'
+  - NUMPY_VERSION='1.12'
+  - NUMPY_VERSION='1.13'
 
 branches:
   only:
     - master
 
 before_install:
+  - sudo apt-get update
   # Install Miniconda
-  - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then wget http://repo.continuum.io/miniconda/Miniconda-2.2.2-Linux-x86_64.sh -O miniconda.sh; else wget http://repo.continuum.io/miniconda/Miniconda3-2.2.2-Linux-x86_64.sh -O miniconda.sh; fi
-  - chmod +x miniconda.sh
-  - ./miniconda.sh -b
-  - export PATH=/home/travis/anaconda/bin:$PATH
-  - conda update --yes conda
-  # Setup environment
-  - conda create -n travisci --yes python=${TRAVIS_PYTHON_VERSION:0:3} numpy=${NUMPY_VERSION}
-  - source activate travisci
-  # Install unittest2 for Python 2
-  - if [ ${TRAVIS_PYTHON_VERSION:0:3} == "2.6" ]; then conda install --yes unittest2 argparse; fi
+  - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2.7" ]; then
+      wget http://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
+    else
+      wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+    fi
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  # useful for debugging purposes
+  - conda info -a
 
-install:
+  # Setup environment
+  - conda create -q -n test-environment  python=${TRAVIS_PYTHON_VERSION:0:3} numpy=${NUMPY_VERSION} nose
+  - source activate test-environment
+
     # Build extensions without silencing compile errors
-    - python setup.py build_ext -q
-    # Install
-    - python setup.py install -q >/dev/null
+    - python setup.py install
 
 script:
     - cd ~ ; python -m gulinalg.testing -b
