@@ -23,10 +23,11 @@
 
 
 /*
+  0.1.6 added ldl
   0.1.5 added STRICT_FP to detect non-conformant rounding in x87
   0.1.4 started logging changes
  */
-static const char* _impl_version_string = "0.1.5";
+static const char* _impl_version_string = "0.1.6";
 
 /*
  ****************************************************************************
