@@ -15,5 +15,5 @@ you are building your own version of NumPy that should be the case.
 Build Status
 ============
 
-[![Build Status](https://travis-ci.org/ContinuumIO/gulinalg.svg?branch=master)](https://travis-ci.org/ContinuumIO/gulinalg)
+Travis CI: [![Build Status](https://travis-ci.org/ContinuumIO/gulinalg.svg?branch=master)](https://travis-ci.org/ContinuumIO/gulinalg)
 
