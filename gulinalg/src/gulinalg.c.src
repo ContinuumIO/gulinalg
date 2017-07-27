@@ -78,318 +78,364 @@ typedef struct { float r, i; } f2c_complex;
 typedef struct { double r, i; } f2c_doublecomplex;
 /* typedef long int (*L_fp)(); */
 
-extern int
-FNAME(sgeev)(char *jobvl, char *jobvr, int *n,
-             float a[], int *lda, float wr[], float wi[],
-             float vl[], int *ldvl, float vr[], int *ldvr,
-             float work[], int lwork[],
-             int *info);
-extern int
-FNAME(dgeev)(char *jobvl, char *jobvr, int *n,
-             double a[], int *lda, double wr[], double wi[],
-             double vl[], int *ldvl, double vr[], int *ldvr,
-             double work[], int lwork[],
-             int *info);
-extern int
-FNAME(cgeev)(char *jobvl, char *jobvr, int *n,
-             f2c_doublecomplex a[], int *lda,
-             f2c_doublecomplex w[],
-             f2c_doublecomplex vl[], int *ldvl,
-             f2c_doublecomplex vr[], int *ldvr,
-             f2c_doublecomplex work[], int *lwork,
-             double rwork[],
-             int *info);
-extern int
-FNAME(zgeev)(char *jobvl, char *jobvr, int *n,
-             f2c_doublecomplex a[], int *lda,
-             f2c_doublecomplex w[],
-             f2c_doublecomplex vl[], int *ldvl,
-             f2c_doublecomplex vr[], int *ldvr,
-             f2c_doublecomplex work[], int *lwork,
-             double rwork[],
-             int *info);
+typedef int sgeev_type(char *jobvl, char *jobvr, int *n,
+                       float a[], int *lda, float wr[], float wi[],
+                       float vl[], int *ldvl, float vr[], int *ldvr,
+                       float work[], int lwork[],
+                       int *info);
+typedef int dgeev_type(char *jobvl, char *jobvr, int *n,
+                       double a[], int *lda, double wr[], double wi[],
+                       double vl[], int *ldvl, double vr[], int *ldvr,
+                       double work[], int lwork[],
+                       int *info);
 
-extern int
-FNAME(ssyevd)(char *jobz, char *uplo, int *n,
-              float a[], int *lda, float w[], float work[],
-              int *lwork, int iwork[], int *liwork,
-              int *info);
-extern int
-FNAME(dsyevd)(char *jobz, char *uplo, int *n,
-              double a[], int *lda, double w[], double work[],
-              int *lwork, int iwork[], int *liwork,
-              int *info);
-extern int
-FNAME(cheevd)(char *jobz, char *uplo, int *n,
-              f2c_complex a[], int *lda,
-              float w[], f2c_complex work[],
-              int *lwork, float rwork[], int *lrwork, int iwork[],
-              int *liwork,
-              int *info);
-extern int
-FNAME(zheevd)(char *jobz, char *uplo, int *n,
-              f2c_doublecomplex a[], int *lda,
-              double w[], f2c_doublecomplex work[],
-              int *lwork, double rwork[], int *lrwork, int iwork[],
-              int *liwork,
-              int *info);
+typedef int cgeev_type(char *jobvl, char *jobvr, int *n,
+                       f2c_doublecomplex a[], int *lda,
+                       f2c_doublecomplex w[],
+                       f2c_doublecomplex vl[], int *ldvl,
+                       f2c_doublecomplex vr[], int *ldvr,
+                       f2c_doublecomplex work[], int *lwork,
+                       double rwork[],
+                       int *info);
 
-extern int
-FNAME(dgelsd)(int *m, int *n, int *nrhs,
-              double a[], int *lda, double b[], int *ldb,
-              double s[], double *rcond, int *rank,
-              double work[], int *lwork, int iwork[],
-              int *info);
-extern int
-FNAME(zgelsd)(int *m, int *n, int *nrhs,
-              f2c_doublecomplex a[], int *lda,
-              f2c_doublecomplex b[], int *ldb,
-              double s[], double *rcond, int *rank,
-              f2c_doublecomplex work[], int *lwork,
-              double rwork[], int iwork[],
-              int *info);
+typedef int zgeev_type(char *jobvl, char *jobvr, int *n,
+                       f2c_doublecomplex a[], int *lda,
+                       f2c_doublecomplex w[],
+                       f2c_doublecomplex vl[], int *ldvl,
+                       f2c_doublecomplex vr[], int *ldvr,
+                       f2c_doublecomplex work[], int *lwork,
+                       double rwork[],
+                       int *info);
 
-extern int
-FNAME(sgesv)(int *n, int *nrhs,
-             float a[], int *lda,
-             int ipiv[],
-             float b[], int *ldb,
-             int *info);
-extern int
-FNAME(dgesv)(int *n, int *nrhs,
-             double a[], int *lda,
-             int ipiv[],
-             double b[], int *ldb,
-             int *info);
-extern int
-FNAME(cgesv)(int *n, int *nrhs,
-             f2c_complex a[], int *lda,
-             int ipiv[],
-             f2c_complex b[], int *ldb,
-             int *info);
-extern int
-FNAME(zgesv)(int *n, int *nrhs,
-             f2c_doublecomplex a[], int *lda,
-             int ipiv[],
-             f2c_doublecomplex b[], int *ldb,
-             int *info);
+typedef int ssyevd_type(char *jobz, char *uplo, int *n,
+                        float a[], int *lda, float w[], float work[],
+                        int *lwork, int iwork[], int *liwork,
+                        int *info);
 
-extern int
-FNAME(sgetrf)(int *m, int *n,
-              float a[], int *lda,
-              int ipiv[],
-              int *info);
-extern int
-FNAME(dgetrf)(int *m, int *n,
-              double a[], int *lda,
-              int ipiv[],
-              int *info);
-extern int
-FNAME(cgetrf)(int *m, int *n,
-              f2c_complex a[], int *lda,
-              int ipiv[],
-              int *info);
-extern int
-FNAME(zgetrf)(int *m, int *n,
-              f2c_doublecomplex a[], int *lda,
-              int ipiv[],
-              int *info);
+typedef int dsyevd_type(char *jobz, char *uplo, int *n,
+                        double a[], int *lda, double w[], double work[],
+                        int *lwork, int iwork[], int *liwork,
+                        int *info);
 
-extern int
-FNAME(spotrf)(char *uplo, int *n,
-              float a[], int *lda,
-              int *info);
-extern int
-FNAME(dpotrf)(char *uplo, int *n,
-              double a[], int *lda,
-              int *info);
-extern int
-FNAME(cpotrf)(char *uplo, int *n,
-              f2c_complex a[], int *lda,
-              int *info);
-extern int
-FNAME(zpotrf)(char *uplo, int *n,
-              f2c_doublecomplex a[], int *lda,
-              int *info);
+typedef int cheevd_type(char *jobz, char *uplo, int *n,
+                        f2c_complex a[], int *lda,
+                        float w[], f2c_complex work[],
+                        int *lwork, float rwork[], int *lrwork, int iwork[],
+                        int *liwork,
+                        int *info);
+typedef int zheevd_type(char *jobz, char *uplo, int *n,
+                        f2c_doublecomplex a[], int *lda,
+                        double w[], f2c_doublecomplex work[],
+                        int *lwork, double rwork[], int *lrwork, int iwork[],
+                        int *liwork,
+                        int *info);
 
-extern int
-FNAME(ssytrf)(char *uplo, int *,
-              float a[], int *lda,
-              int ipiv[], float work[],
-              int *lwork, int *info);
+typedef int dgelsd_type(int *m, int *n, int *nrhs,
+                        double a[], int *lda, double b[], int *ldb,
+                        double s[], double *rcond, int *rank,
+                        double work[], int *lwork, int iwork[],
+                        int *info);
 
-extern int
-FNAME(dsytrf)(char *uplo, int *n,
-              double a[], int*lda,
-              int ipiv[], double work[],
-              int *lwork, int *info);
+typedef int zgelsd_type(int *m, int *n, int *nrhs,
+                        f2c_doublecomplex a[], int *lda,
+                        f2c_doublecomplex b[], int *ldb,
+                        double s[], double *rcond, int *rank,
+                        f2c_doublecomplex work[], int *lwork,
+                        double rwork[], int iwork[],
+                        int *info);
 
-extern int
-FNAME(chetrf)(char *uplo, int *n,
-              f2c_complex a[], int *lda,
-              int ipiv[], f2c_complex work[],
-              int *lwork, int *info);
+typedef int sgesv_type(int *n, int *nrhs,
+                       float a[], int *lda,
+                       int ipiv[],
+                       float b[], int *ldb,
+                       int *info);
 
-extern int
-FNAME(zhetrf)(char *uplo, int *n,
-              f2c_doublecomplex a[], int *lda,
-              int ipiv[], f2c_doublecomplex work[],
-              int *lwork, int *info);
+typedef int dgesv_type(int *n, int *nrhs,
+                       double a[], int *lda,
+                       int ipiv[],
+                       double b[], int *ldb,
+                       int *info);
 
-extern int
-FNAME(sgesdd)(char *jobz, int *m, int *n,
-              float a[], int *lda, float s[], float u[],
-              int *ldu, float vt[], int *ldvt, float work[],
-              int *lwork, int iwork[], int *info);
-extern int
-FNAME(dgesdd)(char *jobz, int *m, int *n,
-              double a[], int *lda, double s[], double u[],
-              int *ldu, double vt[], int *ldvt, double work[],
-              int *lwork, int iwork[], int *info);
-extern int
-FNAME(cgesdd)(char *jobz, int *m, int *n,
-              f2c_complex a[], int *lda,
-              float s[], f2c_complex u[], int *ldu,
-              f2c_complex vt[], int *ldvt,
-              f2c_complex work[], int *lwork,
-              float rwork[], int iwork[], int *info);
-extern int
-FNAME(zgesdd)(char *jobz, int *m, int *n,
-              f2c_doublecomplex a[], int *lda,
-              double s[], f2c_doublecomplex u[], int *ldu,
-              f2c_doublecomplex vt[], int *ldvt,
-              f2c_doublecomplex work[], int *lwork,
-              double rwork[], int iwork[], int *info);
+typedef int cgesv_type(int *n, int *nrhs,
+                       f2c_complex a[], int *lda,
+                       int ipiv[],
+                       f2c_complex b[], int *ldb,
+                       int *info);
 
-extern int
-FNAME(spotrs)(char *uplo, int *n, int *nrhs,
-              float a[], int *lda,
-              float b[], int *ldb,
-              int *info);
-extern int
-FNAME(dpotrs)(char *uplo, int *n, int *nrhs,
-              double a[], int *lda,
-              double b[], int *ldb,
-              int *info);
-extern int
-FNAME(cpotrs)(char *uplo, int *n, int *nrhs,
-              f2c_complex a[], int *lda,
-              f2c_complex b[], int *ldb,
-              int *info);
-extern int
-FNAME(zpotrs)(char *uplo, int *n, int *nrhs,
-              f2c_doublecomplex a[], int *lda,
-              f2c_doublecomplex b[], int *ldb,
-              int *info);
+typedef int zgesv_type(int *n, int *nrhs,
+                       f2c_doublecomplex a[], int *lda,
+                       int ipiv[],
+                       f2c_doublecomplex b[], int *ldb,
+                       int *info);
 
-extern int
-FNAME(spotri)(char *uplo, int *n,
-              float a[], int *lda,
-              int *info);
-extern int
-FNAME(dpotri)(char *uplo, int *n,
-              double a[], int *lda,
-              int *info);
-extern int
-FNAME(cpotri)(char *uplo, int *n,
-              f2c_complex a[], int *lda,
-              int *info);
-extern int
-FNAME(zpotri)(char *uplo, int *n,
-              f2c_doublecomplex a[], int *lda,
-              int *info);
+typedef int sgetrf_type(int *m, int *n,
+                        float a[], int *lda,
+                        int ipiv[],
+                        int *info);
 
-extern int
-FNAME(scopy)(int *n,
-             float *sx, int *incx,
-             float *sy, int *incy);
-extern int
-FNAME(dcopy)(int *n,
-             double *sx, int *incx,
-             double *sy, int *incy);
-extern int
-FNAME(ccopy)(int *n,
-             f2c_complex *sx, int *incx,
-             f2c_complex *sy, int *incy);
-extern int
-FNAME(zcopy)(int *n,
-             f2c_doublecomplex *sx, int *incx,
-             f2c_doublecomplex *sy, int *incy);
+typedef int dgetrf_type(int *m, int *n,
+                        double a[], int *lda,
+                        int ipiv[],
+                        int *info);
 
-extern int
-FNAME(sswap)(int *n,
-             float *sx, int *incx,
-             float *sy, int *incy);
-extern int
-FNAME(dswap)(int *n,
-             double *sx, int *incx,
-             double *sy, int *incy);
-extern int
-FNAME(cswap)(int *n,
-             f2c_complex *sx, int *incx,
-             f2c_complex *sy, int *incy);
-extern int
-FNAME(zswap)(int *n,
-             f2c_doublecomplex *sx, int *incx,
-             f2c_doublecomplex *sy, int *incy);
+typedef int cgetrf_type(int *m, int *n,
+                        f2c_complex a[], int *lda,
+                        int ipiv[],
+                        int *info);
 
-extern float
-FNAME(sdot)(int *n,
-            float *sx, int *incx,
-            float *sy, int *incy);
-extern double
-FNAME(ddot)(int *n,
-            double *sx, int *incx,
-            double *sy, int *incy);
-extern void
-FNAME(cdotu)(f2c_complex *ret_val, int *n,
-             f2c_complex *sx, int *incx,
-             f2c_complex *sy, int *incy);
-extern void
-FNAME(zdotu)(f2c_doublecomplex *ret_val, int *n,
-             f2c_doublecomplex *sx, int *incx,
-             f2c_doublecomplex *sy, int *incy);
-extern void
-FNAME(cdotc)(f2c_complex *ret_val, int *n,
-             f2c_complex *sx, int *incx,
-             f2c_complex *sy, int *incy);
-extern void
-FNAME(zdotc)(f2c_doublecomplex *ret_val, int *n,
-             f2c_doublecomplex *sx, int *incx,
-             f2c_doublecomplex *sy, int *incy);
+typedef int zgetrf_type(int *m, int *n,
+                        f2c_doublecomplex a[], int *lda,
+                        int ipiv[],
+                        int *info);
 
-extern int
-FNAME(sgemm)(char *transa, char *transb,
-             int *m, int *n, int *k,
-             float *alpha,
-             float *a, int *lda,
-             float *b, int *ldb,
-             float *beta,
-             float *c, int *ldc);
-extern int
-FNAME(dgemm)(char *transa, char *transb,
-             int *m, int *n, int *k,
-             double *alpha,
-             double *a, int *lda,
-             double *b, int *ldb,
-             double *beta,
-             double *c, int *ldc);
-extern int
-FNAME(cgemm)(char *transa, char *transb,
-             int *m, int *n, int *k,
-             f2c_complex *alpha,
-             f2c_complex *a, int *lda,
-             f2c_complex *b, int *ldb,
-             f2c_complex *beta,
-             f2c_complex *c, int *ldc);
-extern int
-FNAME(zgemm)(char *transa, char *transb,
-             int *m, int *n, int *k,
-             f2c_doublecomplex *alpha,
-             f2c_doublecomplex *a, int *lda,
-             f2c_doublecomplex *b, int *ldb,
-             f2c_doublecomplex *beta,
-             f2c_doublecomplex *c, int *ldc);
+typedef int spotrf_type(char *uplo, int *n,
+                        float a[], int *lda,
+                        int *info);
+
+typedef int dpotrf_type(char *uplo, int *n,
+                        double a[], int *lda,
+                        int *info);
+
+typedef int cpotrf_type(char *uplo, int *n,
+                        f2c_complex a[], int *lda,
+                        int *info);
+
+typedef int zpotrf_type(char *uplo, int *n,
+                        f2c_doublecomplex a[], int *lda,
+                        int *info);
+
+typedef int ssytrf_type(char *uplo, int *,
+                        float a[], int *lda,
+                        int ipiv[], float work[],
+                        int *lwork, int *info);
+
+typedef int dsytrf_type(char *uplo, int *n,
+                        double a[], int*lda,
+                        int ipiv[], double work[],
+                        int *lwork, int *info);
+
+typedef int chetrf_type(char *uplo, int *n,
+                        f2c_complex a[], int *lda,
+                        int ipiv[], f2c_complex work[],
+                        int *lwork, int *info);
+
+typedef int zhetrf_type(char *uplo, int *n,
+                        f2c_doublecomplex a[], int *lda,
+                        int ipiv[], f2c_doublecomplex work[],
+                        int *lwork, int *info);
+
+typedef int sgesdd_type(char *jobz, int *m, int *n,
+                        float a[], int *lda, float s[], float u[],
+                        int *ldu, float vt[], int *ldvt, float work[],
+                        int *lwork, int iwork[], int *info);
+
+typedef int dgesdd_type(char *jobz, int *m, int *n,
+                        double a[], int *lda, double s[], double u[],
+                        int *ldu, double vt[], int *ldvt, double work[],
+                        int *lwork, int iwork[], int *info);
+
+typedef int cgesdd_type(char *jobz, int *m, int *n,
+                        f2c_complex a[], int *lda,
+                        float s[], f2c_complex u[], int *ldu,
+                        f2c_complex vt[], int *ldvt,
+                        f2c_complex work[], int *lwork,
+                        float rwork[], int iwork[], int *info);
+
+typedef int zgesdd_type(char *jobz, int *m, int *n,
+                        f2c_doublecomplex a[], int *lda,
+                        double s[], f2c_doublecomplex u[], int *ldu,
+                        f2c_doublecomplex vt[], int *ldvt,
+                        f2c_doublecomplex work[], int *lwork,
+                        double rwork[], int iwork[], int *info);
+
+typedef int spotrs_type(char *uplo, int *n, int *nrhs,
+                        float a[], int *lda,
+                        float b[], int *ldb,
+                        int *info);
+
+typedef int dpotrs_type(char *uplo, int *n, int *nrhs,
+                        double a[], int *lda,
+                        double b[], int *ldb,
+                        int *info);
+
+typedef int cpotrs_type(char *uplo, int *n, int *nrhs,
+                        f2c_complex a[], int *lda,
+                        f2c_complex b[], int *ldb,
+                        int *info);
+
+typedef int zpotrs_type(char *uplo, int *n, int *nrhs,
+                        f2c_doublecomplex a[], int *lda,
+                        f2c_doublecomplex b[], int *ldb,
+                        int *info);
+
+
+typedef int spotri_type(char *uplo, int *n,
+                        float a[], int *lda,
+                        int *info);
+
+typedef int dpotri_type(char *uplo, int *n,
+                        double a[], int *lda,
+                        int *info);
+
+typedef int cpotri_type(char *uplo, int *n,
+                        f2c_complex a[], int *lda,
+                        int *info);
+
+typedef int zpotri_type(char *uplo, int *n,
+                        f2c_doublecomplex a[], int *lda,
+                        int *info);
+
+/* BLAS related prototypes as type */
+typedef int scopy_type(int *n,
+                       float *sx, int *incx,
+                       float *sy, int *incy);
+
+typedef int dcopy_type(int *n,
+                       double *sx, int *incx,
+                       double *sy, int *incy);
+
+typedef int ccopy_type(int *n,
+                       f2c_complex *sx, int *incx,
+                       f2c_complex *sy, int *incy);
+
+typedef int zcopy_type(int *n,
+                       f2c_doublecomplex *sx, int *incx,
+                       f2c_doublecomplex *sy, int *incy);
+
+
+typedef int sswap_type(int *n,
+                       float *sx, int *incx,
+                       float *sy, int *incy);
+
+typedef int dswap_type(int *n,
+                       double *sx, int *incx,
+                       double *sy, int *incy);
+
+typedef int cswap_type(int *n,
+                       f2c_complex *sx, int *incx,
+                       f2c_complex *sy, int *incy);
+
+typedef int zswap_type(int *n,
+                       f2c_doublecomplex *sx, int *incx,
+                       f2c_doublecomplex *sy, int *incy);
+
+typedef float sdot_type(int *n,
+                        float *sx, int *incx,
+                        float *sy, int *incy);
+
+typedef double ddot_type(int *n,
+                         double *sx, int *incx,
+                         double *sy, int *incy);
+
+typedef void cdotu_type(f2c_complex *ret_val, int *n,
+                        f2c_complex *sx, int *incx,
+                        f2c_complex *sy, int *incy);
+
+typedef void zdotu_type(f2c_doublecomplex *ret_val, int *n,
+                        f2c_doublecomplex *sx, int *incx,
+                        f2c_doublecomplex *sy, int *incy);
+
+typedef void cdotc_type(f2c_complex *ret_val, int *n,
+                        f2c_complex *sx, int *incx,
+                        f2c_complex *sy, int *incy);
+            
+typedef void zdotc_type(f2c_doublecomplex *ret_val, int *n,
+                        f2c_doublecomplex *sx, int *incx,
+                        f2c_doublecomplex *sy, int *incy);
+
+typedef int sgemm_type(char *transa, char *transb,
+                       int *m, int *n, int *k,
+                       float *alpha,
+                       float *a, int *lda,
+                       float *b, int *ldb,
+                       float *beta,
+                       float *c, int *ldc);
+            
+typedef int dgemm_type(char *transa, char *transb,
+                       int *m, int *n, int *k,
+                       double *alpha,
+                       double *a, int *lda,
+                       double *b, int *ldb,
+                       double *beta,
+                       double *c, int *ldc);
+
+typedef int cgemm_type(char *transa, char *transb,
+                       int *m, int *n, int *k,
+                       f2c_complex *alpha,
+                       f2c_complex *a, int *lda,
+                       f2c_complex *b, int *ldb,
+                       f2c_complex *beta,
+                       f2c_complex *c, int *ldc);
+
+typedef int zgemm_type(char *transa, char *transb,
+                       int *m, int *n, int *k,
+                       f2c_doublecomplex *alpha,
+                       f2c_doublecomplex *a, int *lda,
+                       f2c_doublecomplex *b, int *ldb,
+                       f2c_doublecomplex *beta,
+                       f2c_doublecomplex *c, int *ldc);
+
+
+/* LAPACK related external symbols */
+extern sgeev_type FNAME(sgeev);
+extern dgeev_type FNAME(dgeev);
+extern cgeev_type FNAME(cgeev);
+extern zgeev_type FNAME(zgeev);
+extern ssyevd_type FNAME(ssyevd);
+extern dsyevd_type FNAME(dsyevd);
+extern cheevd_type FNAME(cheevd);
+extern zheevd_type FNAME(zheevd);
+extern dgelsd_type FNAME(dgelsd);
+extern zgelsd_type FNAME(zgelsd);
+extern sgesv_type FNAME(sgesv);
+extern dgesv_type FNAME(dgesv);
+extern cgesv_type FNAME(cgesv);
+extern zgesv_type FNAME(zgesv);
+extern sgetrf_type FNAME(sgetrf);
+extern dgetrf_type FNAME(dgetrf);
+extern cgetrf_type FNAME(cgetrf);
+extern zgetrf_type FNAME(zgetrf);
+extern spotrf_type FNAME(spotrf);
+extern dpotrf_type FNAME(dpotrf);
+extern cpotrf_type FNAME(cpotrf);
+extern zpotrf_type FNAME(zpotrf);
+extern ssytrf_type FNAME(ssytrf);
+extern dsytrf_type FNAME(dsytrf);
+extern chetrf_type FNAME(chetrf);
+extern zhetrf_type FNAME(zhetrf);
+extern sgesdd_type FNAME(sgesdd);
+extern dgesdd_type FNAME(dgesdd);
+extern cgesdd_type FNAME(cgesdd);
+extern zgesdd_type FNAME(zgesdd);
+extern spotrs_type FNAME(spotrs);
+extern dpotrs_type FNAME(dpotrs);
+extern cpotrs_type FNAME(cpotrs);
+extern zpotrs_type FNAME(zpotrs);
+extern spotri_type FNAME(spotri);
+extern dpotri_type FNAME(dpotri);
+extern cpotri_type FNAME(cpotri);
+extern zpotri_type FNAME(zpotri);
+
+/* BLAS related extern symbols */
+extern scopy_type FNAME(scopy);
+extern dcopy_type FNAME(dcopy);
+extern ccopy_type FNAME(ccopy);
+extern zcopy_type FNAME(zcopy);
+extern sswap_type FNAME(sswap);
+extern dswap_type FNAME(dswap);
+extern cswap_type FNAME(cswap);
+extern zswap_type FNAME(zswap);
+extern sdot_type FNAME(sdot);
+extern ddot_type FNAME(ddot);
+extern cdotu_type FNAME(cdotu);
+extern zdotu_type FNAME(zdotu);
+extern cdotc_type FNAME(cdotc);
+extern zdotc_type FNAME(zdotc);
+extern sgemm_type FNAME(sgemm);
+extern dgemm_type FNAME(dgemm);
+extern cgemm_type FNAME(cgemm);
+extern zgemm_type FNAME(zgemm);
+
 
 
 #define LAPACK_T(FUNC)                                          \
@@ -1479,6 +1525,7 @@ static void
         release_gemm_params(&params);
     }
 }
+
 /**end repeat**/
 
 
