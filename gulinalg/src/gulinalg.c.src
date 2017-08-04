@@ -895,6 +895,7 @@ update_pointers(npy_uint8** bases, ptrdiff_t* offsets, size_t count)
     #typ=float,double,COMPLEX_t,DOUBLECOMPLEX_t#
     #copy=scopy,dcopy,ccopy,zcopy#
     #nan=s_nan, d_nan, c_nan, z_nan#
+    #zero=s_zero, d_zero, c_zero, z_zero#
  */
 static inline void *
 linearize_@TYPE@_matrix(void *dst_in,
@@ -1017,6 +1018,23 @@ nan_@TYPE@_matrix(void *dst_in, const LINEARIZE_DATA_t* data)
         ptrdiff_t cs = data->column_strides/sizeof(@typ@);
         for (j=0; j< data->columns; ++j) {
             *cp = @nan@;
+            cp += cs;
+        }
+        dst += data->row_strides/sizeof(@typ@);
+    }
+}
+
+static inline void
+zero_@TYPE@_matrix(void *dst_in, const LINEARIZE_DATA_t* data)
+{
+    @typ@ *dst = (@typ@ *) dst_in;
+
+    int i,j;
+    for (i=0; i < data->rows; i++) {
+        @typ@ *cp = dst;
+        ptrdiff_t cs = data->column_strides/sizeof(@typ@);
+        for (j=0; j< data->columns; ++j) {
+            *cp = @zero@;
             cp += cs;
         }
         dst += data->row_strides/sizeof(@typ@);
@@ -1512,14 +1530,20 @@ static void
             @typ@ *C = params.C ? (@typ@*)params.C : (@typ@ *) args[2];
 
             /* linearize source operands if needed */
-            FNAME(@GEMM@)(&params.TRANSA, &params.TRANSB,
-                          &params.M, &params.N, &params.K,
-                          (void*)&@one@, // alpha
-                          (void*)A, &params.LDA,
-                          (void*)B, &params.LDB,
-                          (void*)&@zero@, // beta
-                          (void*)C, &params.LDC);
-            delinearize_@TYPE@_matrix(args[2], params.C, &c_out);
+            /* (M, K) x (K, N) -> (M, N) */
+            if (params.K != 0) {
+                FNAME(@GEMM@)(&params.TRANSA, &params.TRANSB,
+                              &params.M, &params.N, &params.K,
+                              (void*)&@one@, // alpha
+                              (void*)A, &params.LDA,
+                              (void*)B, &params.LDB,
+                              (void*)&@zero@, // beta
+                              (void*)C, &params.LDC);
+                delinearize_@TYPE@_matrix(args[2], params.C, &c_out);
+            } else {
+                /* if K is 0, then fill the result with zeros */
+                zero_@TYPE@_matrix(args[2], &c_out);
+            }
         END_OUTER_LOOP
 
         release_gemm_params(&params);
