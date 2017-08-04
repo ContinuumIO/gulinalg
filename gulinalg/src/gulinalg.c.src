@@ -1512,26 +1512,32 @@ static void
     k = (fortran_int) dimensions[1];
     n = (fortran_int) dimensions[2];
 
+    if (m == 0 || n == 0)
+        return; /* output array will be empty, as one of its inner dimensions will be 0 */
+
     if (init_gemm_params(&params, m, k, n, steps, sizeof(@typ@)))
     {
         LINEARIZE_DATA_t a_in, b_in, c_out;
 
-        if (params.A)
-            init_linearize_data(&a_in, k, m, steps[1], steps[0]);
-        if (params.B)
-            init_linearize_data(&b_in, n, k, steps[3], steps[2]);
+        if (params.K != 0) {
+            if (params.A)
+                init_linearize_data(&a_in, k, m, steps[1], steps[0]);
+            if (params.B)
+                init_linearize_data(&b_in, n, k, steps[3], steps[2]);
+        }
+
         if (params.C)
             init_linearize_data(&c_out, n, m, steps[5], steps[4]);
 
         BEGIN_OUTER_LOOP_3
-            /* just call the appropriate multiply and update pointers */
-            @typ@ *A = linearize_@TYPE@_matrix(params.A, args[0], &a_in);
-            @typ@ *B = linearize_@TYPE@_matrix(params.B, args[1], &b_in);
-            @typ@ *C = params.C ? (@typ@*)params.C : (@typ@ *) args[2];
-
-            /* linearize source operands if needed */
-            /* (M, K) x (K, N) -> (M, N) */
             if (params.K != 0) {
+                /* just call the appropriate multiply and update pointers */
+                @typ@ *A = linearize_@TYPE@_matrix(params.A, args[0], &a_in);
+                @typ@ *B = linearize_@TYPE@_matrix(params.B, args[1], &b_in);
+                @typ@ *C = params.C ? (@typ@*)params.C : (@typ@ *) args[2];
+
+                /* linearize source operands if needed */
+                /* (M, K) x (K, N) -> (M, N) */
                 FNAME(@GEMM@)(&params.TRANSA, &params.TRANSB,
                               &params.M, &params.N, &params.K,
                               (void*)&@one@, // alpha

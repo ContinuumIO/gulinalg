@@ -32,5 +32,13 @@ class TestBugs(TestCase):
         d = gulinalg.matrix_multiply(a,b)
         assert_allclose(d, np.zeros((2,2)))
 
+        # check other border cases...
+        e = gulinalg.matrix_multiply(np.zeros((0,2)), np.zeros((2,2)))
+        assert_allclose(e, np.zeros((0,2)))
+
+        f = gulinalg.matrix_multiply(np.zeros((2,2)), np.zeros((2,0)))
+        assert_allclose(f, np.zeros((2,0)))
+
+
 if __name__ == '__main__':
     run_module_suite()
