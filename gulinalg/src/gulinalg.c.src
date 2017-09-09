@@ -1347,6 +1347,7 @@ typedef struct gemm_params_struct
     char TRANSB;
 
     void *allocated_data;
+    int  swap_args;
 } GEMM_PARAMS_t;
 
 static inline void
@@ -1356,21 +1357,24 @@ dump_gemm_params(const char* name, const GEMM_PARAMS_t* params)
               "%14s: %18p\n" "%14s: %18p\n" "%14s: %18p\n"
               "%14s: %18d\n" "%14s: %18d\n" "%14s: %18d\n"
               "%14s: %18d\n" "%14s: %18d\n" "%14s: %18d\n"
-              "%14s: %15c'%c'\n" "%14s: %15c'%c'\n",
+              "%14s: %15c'%c'\n" "%14s: %15c'%c'\n"
+              "%14s: %18s\n",
               name,
               "A", params->A, "B", params->B, "C", params->C,
               "LDA", params->LDA, "LDB", params->LDB, "LDC", params->LDC,
               "M", params->M, "K", params->K, "N", params->N,
-              "TRANSA", ' ', params->TRANSA, "TRANSB", ' ', params->TRANSB);
+              "TRANSA", ' ', params->TRANSA, "TRANSB", ' ', params->TRANSB,
+              "swapped", params->swap_args?"Yes":"No");
 }
 
 
 typedef struct _matrix_desc {
-    int need_buff;
     fortran_int lead;
     size_t size;
     void *buff;
+    int transposed;
 } matrix_desc;
+
 
 static inline void
 matrix_desc_init(matrix_desc *mtxd,
@@ -1380,45 +1384,73 @@ matrix_desc_init(matrix_desc *mtxd,
                  fortran_int columns)
 /* initialized a matrix desc based on the information in steps
    it will fill the matrix desc with the values needed.
-   steps[0] contains column stride
-   steps[1] contains row stride
+
+   mtxd    - matrix descriptor to fill
+   steps   - column, row stride in a 2 element array
+             (as in intra-column stride and intra-row strie)
+   sot     - size of type. The size of the element of the array. This
+             will always be a power of two (actually, 4 or 8 as code will
+             be generated for single and double)
+   rows    - number of rows in the matrix (or length of column) rows >= 1
+   columns - number of columns in the matrix (or length of row) columns >= 1
+
 */
 {
-    /* if column step is not element step, a copy will be needed
-       to arrange the array in a way compatible with blas
-    */
-    mtxd->need_buff = steps[0] != sot;
+    /* The description should figure out whether a buffer is needed
+       to rearrange the matrix in memory or not.
 
-    if (!mtxd->need_buff) {
-        if (steps[1]) {
-            mtxd->lead = (fortran_int) steps[1] / sot;
-        } else {
-            /* step is 0, this means either it is only 1 column or
-               there is a step trick around*/
-            if (columns > 1) {
-                /* step tricks not supported in gemm... make a copy */
-                mtxd->need_buff = 1;
-            } else {
-                /* lead must be at least 1. Note that lead in this case
-                 should be indifferent as there is only one column */
-                mtxd->lead = rows;
-            }
+       As GEMM supports transposed parameters *and* we want to avoid copies,
+       we'll try to figure out if we can avoid the copy by using either the
+       straight matrix or its transpose.
+    */ 
+    npy_int row_stride, col_stride, min_stride;
+    fortran_int lead;
+    int sot_mask;
+    int requires_copy;
+
+    col_stride = steps[0];
+    row_stride = steps[1];
+
+    /* check if we can use the input buffer directly */
+    if (col_stride <= row_stride) {
+        /* maybe col major */
+        if (col_stride == sot && /* dense columns */
+            row_stride % sot == 0 && /* elements aligned */
+            row_stride / sot >= rows) { /* lead will be >= max(1, columns) */
+            /* Can use directly, non transposed "FORTRAN" array */
+            mtxd->lead = row_stride / sot;
+            mtxd->size = 0;
+            mtxd->buff = NULL;
+            mtxd->transposed = 0; /* normal */
+            return; /* done */
+        }
+    } else {
+        /* maybe row major */
+        if (row_stride == sot && /* dense rows */
+            col_stride % sot == 0 && /* elements aligned */
+            col_stride / sot >= columns) { /* lead will be >= max(1, rows) */
+            /* Can use directly, transposed "FORTRAN" array -C array- */
+            mtxd->lead = col_stride / sot;
+            mtxd->size = 0;
+            mtxd->buff = NULL;
+            mtxd->transposed = 1; /* Transposed */
+            return; /* done */
         }
     }
 
-    /* if a copy is performed, the lead is the number of columns */
-    if (mtxd->need_buff) {
-        mtxd->lead = rows;
-    }
-
-    mtxd->size = rows*columns*sot*mtxd->need_buff;
+    /* If we reach this point, we will need a copy. Setup as a column major array
+       by default */
+    mtxd->lead = columns;
+    mtxd->size = rows*columns*sot; /* this being non zero means a buff is needed */
     mtxd->buff = NULL;
+    mtxd->transposed = 0; /* normal */
+
 }
 
 static inline npy_uint8 *
 matrix_desc_assign_buff(matrix_desc* mtxd, npy_uint8 *p)
 {
-    if (mtxd->need_buff) {
+    if (mtxd->size) {
         mtxd->buff = p;
         return p + mtxd->size;
     } else {
@@ -1434,11 +1466,34 @@ init_gemm_params(GEMM_PARAMS_t *params,
                  npy_intp* steps,
                  size_t sot)
 {
+    int swap_args = 0;
     npy_uint8 *mem_buff = NULL;
     matrix_desc a, b, c;
-    matrix_desc_init(&a, steps + 0, sot, m, k);
-    matrix_desc_init(&b, steps + 2, sot, k, n);
     matrix_desc_init(&c, steps + 4, sot, m, n);
+    if (!c.transposed) {
+        /* either the result is in FORTRAN order or a copy is needed for
+           the output */
+        matrix_desc_init(&a, steps + 0, sot, m, k);
+        matrix_desc_init(&b, steps + 2, sot, k, n);
+    } else {
+        /* note that this implies that the result buffer is "dense" but that
+           it expects the result in C order. We will be able to deal with that
+           by using the identity B.T x A.T == AB.T*/
+        c.transposed = 0;
+        matrix_desc_init(&a, steps + 2, sot, k, n);
+        matrix_desc_init(&b, steps + 0, sot, m, k);
+        /* transpose the matrix_descs */
+        a.transposed = 1 - a.transposed;
+        b.transposed = 1 - b.transposed;
+
+        {
+            fortran_int tmp;
+            tmp = m;
+            m = n;
+            n = tmp;
+        }
+        swap_args = 1;
+    }
 
     if (a.size + b.size + c.size)
     {
@@ -1463,10 +1518,11 @@ init_gemm_params(GEMM_PARAMS_t *params,
     params->M = m;
     params->N = n;
     params->K = k;
-    params->TRANSA='N';
-    params->TRANSB='N';
+    params->TRANSA="NT"[a.transposed];
+    params->TRANSB="NT"[b.transposed];
 
     params->allocated_data = mem_buff;
+    params->swap_args = swap_args;
 
     return 1;
  error:
@@ -1517,23 +1573,32 @@ static void
 
     if (init_gemm_params(&params, m, k, n, steps, sizeof(@typ@)))
     {
+        int swapped = params.swap_args;
         LINEARIZE_DATA_t a_in, b_in, c_out;
 
-        if (params.K != 0) {
-            if (params.A)
-                init_linearize_data(&a_in, k, m, steps[1], steps[0]);
-            if (params.B)
-                init_linearize_data(&b_in, n, k, steps[3], steps[2]);
+        if (k != 0) {
+            if (!swapped) {
+                if (params.A)
+                    init_linearize_data(&a_in, k, m, steps[1], steps[0]);
+                if (params.B)
+                    init_linearize_data(&b_in, n, k, steps[3], steps[2]);
+            } else {
+                /* swapped args */
+                if (params.A)
+                    init_linearize_data(&a_in, n, k, steps[3], steps[2]);
+                if (params.B)
+                    init_linearize_data(&b_in, k, m, steps[1], steps[0]);
+            }
         }
 
         if (params.C)
             init_linearize_data(&c_out, n, m, steps[5], steps[4]);
 
         BEGIN_OUTER_LOOP_3
-            if (params.K != 0) {
+            if (k != 0) {
                 /* just call the appropriate multiply and update pointers */
-                @typ@ *A = linearize_@TYPE@_matrix(params.A, args[0], &a_in);
-                @typ@ *B = linearize_@TYPE@_matrix(params.B, args[1], &b_in);
+                @typ@ *A = linearize_@TYPE@_matrix(params.A, args[swapped], &a_in);
+                @typ@ *B = linearize_@TYPE@_matrix(params.B, args[1-swapped], &b_in);
                 @typ@ *C = params.C ? (@typ@*)params.C : (@typ@ *) args[2];
 
                 /* linearize source operands if needed */
