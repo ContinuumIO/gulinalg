@@ -1567,7 +1567,6 @@ static void
     m = (fortran_int) dimensions[0];
     k = (fortran_int) dimensions[1];
     n = (fortran_int) dimensions[2];
-
     if (m == 0 || n == 0)
         return; /* output array will be empty, as one of its inner dimensions will be 0 */
 
@@ -1589,10 +1588,13 @@ static void
                 if (params.B)
                     init_linearize_data(&b_in, k, m, steps[1], steps[0]);
             }
-        }
-
-        if (params.C)
+            if (params.C) {
+                init_linearize_data(&c_out, n, m, steps[5], steps[4]);
+            }
+        } else {
+            /* always init in this case (k==0) as c_out will be used to zero the result */
             init_linearize_data(&c_out, n, m, steps[5], steps[4]);
+        }
 
         BEGIN_OUTER_LOOP_3
             if (k != 0) {

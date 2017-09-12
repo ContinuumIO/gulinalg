@@ -23,9 +23,15 @@ class TestBugs(TestCase):
     def test_zero_K_gemm(self):
         a = np.zeros((2,0))
         b = np.zeros((0,2))
-        c = np.empty((2,2))
+        c = np.empty((2,2), order="C")
         c.fill(np.nan)
         # make sure that the result is set to zero
+        gulinalg.matrix_multiply(a, b, out=c)
+        assert_allclose(c, np.zeros((2,2)))
+
+        # make sure that this works also when order is FORTRAN
+        c = np.empty((2,2), order="F")
+        c.fill(np.nan)
         gulinalg.matrix_multiply(a, b, out=c)
         assert_allclose(c, np.zeros((2,2)))
 
