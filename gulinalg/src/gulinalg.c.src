@@ -3570,13 +3570,6 @@ static void
                     }
                 }
 
-<<<<<<< HEAD
-                // Get the Q matrix from lower triangle of A and TAU
-                LAPACK(@orgqr@)(&params.M, &k,
-                                &min_m_n, Q, &params.LDA,
-                                params.TAU, params.WORK,
-                                &params.LWORK, &info);
-=======
                 /*
                  * Call orgqr to get Q matrix from lower triangle of A and TAU.
                  * First get the appropriate workspace for orgqr as workspace
