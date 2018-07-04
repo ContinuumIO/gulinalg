@@ -572,7 +572,7 @@ extern dgeqrf_type FNAME(dgeqrf);
 extern cgeqrf_type FNAME(cgeqrf);
 extern zgeqrf_type FNAME(zgeqrf);
 extern sorgqr_type FNAME(sorgqr);
-extern sorgqr_type FNAME(dorgqr);
+extern dorgqr_type FNAME(dorgqr);
 extern cungqr_type FNAME(cungqr);
 extern zungqr_type FNAME(zungqr);
 extern strtri_type FNAME(strtri);
@@ -3570,15 +3570,53 @@ static void
                     }
                 }
 
+<<<<<<< HEAD
                 // Get the Q matrix from lower triangle of A and TAU
                 LAPACK(@orgqr@)(&params.M, &k,
                                 &min_m_n, Q, &params.LDA,
                                 params.TAU, params.WORK,
                                 &params.LWORK, &info);
+=======
+                /*
+                 * Call orgqr to get Q matrix from lower triangle of A and TAU.
+                 * First get the appropriate workspace for orgqr as workspace
+                 * allocated for geqrf won't work, at least for MKL version.
+                 */
+                @ftyp@ work;
+                fortran_int lwork = -1;
+                LAPACK(@orgqr@)(&params.M,
+                                &k,
+                                &min_m_n,
+                                NULL,
+                                &params.LDA,
+                                NULL,
+                                &work,
+                                &lwork,
+                                &info);
+
+                if (info != 0) {
+                    free(Q_buf);
+                    free(R);
+                    error_occurred = 1;
+                    goto error;
+                }
+
+                lwork = *(@fbasetyp@*)&work * sizeof(@ftyp@);
+                void *work_buff = malloc(lwork);
+                LAPACK(@orgqr@)(&params.M,
+                                &k,
+                                &min_m_n,
+                                Q,
+                                &params.LDA,
+                                params.TAU,
+                                work_buff,
+                                &lwork,
+                                &info);
 
                 if (info) {
                     free(Q_buf);
                     free(R);
+                    free(work_buff);
                     error_occurred = 1;
                     goto error;
                 }
@@ -3591,6 +3629,7 @@ static void
                 // copied to output.
                 free(Q_buf);
                 free(R);
+                free(work_buff);
             }
         error:
             if (error_occurred)
