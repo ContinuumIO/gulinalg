@@ -16,7 +16,13 @@ functions as gufuncs. The underlying implementation is BLAS based.
 - matrix_multiply: matrix_multiply over the 2 inner dimensions,
   broadcasting
 
+- matvec_multiply: matvec_multiply over the 2 inner dimensions,
+  broadcasting
+
 - quadratic form: quadratic form uQv over the inner dimensions,
+  broadcasting
+
+- update_rank1: rank1 update over the inner dimensions,
   broadcasting
 
 """
@@ -208,6 +214,46 @@ def matrix_multiply(a,b,**kwargs):
     return _impl.matrix_multiply(a,b,**kwargs)
 
 
+def matvec_multiply(a, b, **kwargs):
+    """
+    Compute matrix vector multiplication, with broadcasting
+
+    Parameters
+    ----------
+    a : (..., M, N) array
+        Input array.
+    b : (..., N) array
+        Input array
+
+    Returns
+    -------
+    r : (..., M) matrix vector multiplication of a and b over any number of
+        outer dimensions
+
+    Notes
+    -----
+    Numpy broadcasting rules apply.
+
+    Matrix vector multiplication is computed using BLAS _gemv functions.
+
+    Implemented for single, double, csingle and cdouble. Numpy conversion
+    rules apply.
+
+    Examples
+    --------
+    >>> a = np.arange(1,17).reshape(2,2,4)
+    >>> b = np.arange(1,9).reshape(2,4)
+    >>> res = matvec_multiply(a,b)
+    >>> res.shape == (2,2)
+    True
+    >>> res
+    array([[  30.,   70.],
+           [ 278.,  382.]])
+
+    """
+    return _impl.matvec_multiply(a, b, **kwargs)
+
+
 def quadratic_form(u,Q,v, **kwargs):
     """
     Compute the quadratic form uQv, with broadcasting
@@ -259,3 +305,57 @@ def quadratic_form(u,Q,v, **kwargs):
     return _impl.quadratic_form(u, Q, v, **kwargs)
 
 
+def update_rank1(a, b, c, conjugate=True, **kwargs):
+    """
+    Compute rank1 update, with broadcasting
+
+    Parameters
+    ----------
+    a : (..., M) array
+        Input array.
+
+    b : (..., N) array
+        Input array
+
+    c : (..., M, N) array
+        Input array.
+
+    conjugate : bool (default True)
+        For complex numbers, use conjugate transpose of b instead of normal
+        transpose. If false, use normal transpose.
+
+    Returns
+    -------
+    r : (..., M, N) rank1 update of a, b and c over any number of
+        outer dimensions
+
+    Notes
+    -----
+    Numpy broadcasting rules apply.
+
+    Rank1 update is computed using BLAS _ger functions for real numbers.
+    For complex number, uses _gerc and _geru for conjuate and normal transpose
+    variants respectively.
+
+    Implemented for single, double, csingle and cdouble. Numpy conversion
+    rules apply.
+
+    Examples
+    --------
+    >>> a = np.array([1, 2])
+    >>> b = np.array([3, 4])
+    >>> c = np.array([[1, 2], [3, 4]])
+    >>> res = update_rank1(a, b, c)
+    >>> res.shape == (2, 2)
+    True
+    >>> res
+    array([[  4.,   6.],
+           [  9.,  12.]])
+
+    """
+    if conjugate:
+        gufunc = _impl.update_rank1_conjugate
+    else:
+        gufunc = _impl.update_rank1
+
+    return gufunc(a, b, c, **kwargs)

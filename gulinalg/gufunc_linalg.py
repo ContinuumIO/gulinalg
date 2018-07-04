@@ -15,6 +15,10 @@ as gufuncs. The underlying implementation is LAPACK based.
 - chosolve
 - inv
 - poinv
+- solve_triangular
+- inv_triangular
+- lu
+- qr
 
 """
 
@@ -24,6 +28,7 @@ from __future__ import division, absolute_import, print_function
 import numpy as np
 from . import _impl
 from .gufunc_general import matrix_multiply
+
 
 def det(a, **kwargs):
     """
@@ -182,6 +187,79 @@ def inv(a, **kwargs):
 
     """
     return _impl.inv(a, **kwargs)
+
+
+def inv_triangular(a, UPLO='L', unit_diagonal=False, **kwargs):
+    """
+    Computes the inverse of a real triangular matrix, with broadcasting.
+
+    Given a triangular matrix `a`, return the matrix `ainv` satisfying
+    ``matrix_multiply(a, ainv) = matrix_multiply(ainv, a) = Identity matrix``
+
+    Parameters
+    ----------
+    a : (..., M, M) array
+        Matrices to be inverted
+
+    UPLO : {'U', 'L'}, optional
+         Specifies whether the calculation is done with the lower
+         triangular part of the elements in `a` ('L', default) or
+         the upper triangular part ('U').
+
+    unit_diagonal : bool, optional
+         If True, the diagonal elements of 'a' are assumed to be 1 and are
+         not referenced.
+
+    Returns
+    -------
+    ainv : (..., M, M) array
+        (Multiplicative) inverse of the `a` matrices.
+
+    Notes
+    -----
+    Numpy broadcasting rules apply.
+
+    The solutions are computed using LAPACK routine _trtri.
+
+    Implemented for types single, double, csingle and cdouble. Numpy conversion
+    rules apply.
+
+    Singular matrices and thus, not invertible, result in an array of NaNs.
+
+    See Also
+    --------
+    inv : compute the (multiplicative) inverse of matrices, with broadcasting.
+
+    poinv : compute the multiplicative inverse of hermitian/symmetric matrices,
+            using cholesky decomposition.
+
+    Examples
+    --------
+    >>> a = np.array([[1, 2], [0, 3]])
+    >>> ainv = inv_triangular(a, UPLO='U')
+    >>> np.allclose(matrix_multiply(a, ainv), np.eye(2))
+    True
+    >>> np.allclose(matrix_multiply(ainv, a), np.eye(2))
+    True
+
+    """
+    uplo_choices = ['U', 'L']
+    if UPLO not in uplo_choices:
+        raise ValueError("Invalid UPLO argument '%s', valid values are: %s" %
+                         (UPLO, uplo_choices))
+
+    if 'U' == UPLO:
+        if unit_diagonal:
+            gufunc = _impl.inv_upper_triangular_unit_diagonal
+        else:
+            gufunc = _impl.inv_upper_triangular_non_unit_diagonal
+    else:
+        if unit_diagonal:
+            gufunc = _impl.inv_lower_triangular_unit_diagonal
+        else:
+            gufunc = _impl.inv_lower_triangular_non_unit_diagonal
+
+    return gufunc(a, **kwargs)
 
 
 def cholesky(a, UPLO='L', **kwargs):
@@ -585,6 +663,9 @@ def solve(A,B,**kw_args):
     chosolve : solve a system using cholesky decomposition (for equations
                having symmetric/hermitian coefficient matrices)
 
+    solve_triangular : Solve the linear matrix equation A * X = B
+               where A is a triangular matrix.
+
     Examples
     --------
     Solve the system of equations ``3 * x0 + x1 = 9`` and ``x0 + 2 * x1 = 8``:
@@ -607,6 +688,164 @@ def solve(A,B,**kw_args):
         gufunc = _impl.solve
 
     return gufunc(A,B,**kw_args)
+
+
+def lu(a, permute_l=False, **kw_args):
+    """
+    LU decomposition on the inner dimensions.
+
+    Computes LU decomposition for a general M x N matrix using partial
+    pivoting with row interchanges. It decomposes A to:
+
+    A = P * L * U
+
+    where P is a permutation matrix, L is lower triangular with unit diagonal
+    elements and U is upper triangular matrix.
+
+    Parameters
+    ----------
+    a : (..., M, N) array
+        Matrices for which compute the lu decomposition
+    permute_l : bool
+        Instead of returning P, L and U (default), return P*L and U.
+
+    Returns
+    -------
+    ** if permute_l == False **
+
+    p : (..., M, M) array
+        Permutation matrix
+    l : (..., M, K) array
+        Lower triangular matrix with unit diagonal where K = min(M, N)
+    u : (..., K, N) array
+        Upper triangular matrix
+
+    ** if permute_l == True **
+
+    pl : (..., M, K) array
+        Permuted lower triangular matrix
+    u : (..., K, N) array
+        Upper triangular matrix
+
+    See Also
+    --------
+    cholesky : Computes cholesky decomposition
+
+    ldl : Computes ldl decomposition
+
+    qr : Computes QR decomposition.
+
+    Notes
+    -----
+    Numpy broadcasting rules apply.
+
+    LU decomposition is performed using LAPACK routine _getrf.
+
+    For elements where the LAPACK routine fails, the result will be set
+    to NaNs.
+
+    Implemented for types single, double, csingle and cdouble. Numpy conversion
+    rules apply.
+
+    Examples
+    --------
+    >>> a = np.random.randn(3, 4) + 1j*np.random.randn(3, 4)
+    >>> p, l, u = lu(a)
+    >>> (p.shape, l.shape, u.shape) == ((3, 3), (3, 3), (3, 4))
+    True
+    >>> np.allclose(a, np.dot(np.dot(p, l), u))
+    True
+
+    >>> pl, u = lu(a, permute_l=True)
+    >>> (pl.shape, u.shape) == ((3, 3), (3, 4))
+    True
+    >>> np.allclose(a, np.dot(pl, u))
+    True
+
+    """
+    m = a.shape[-2]
+    n = a.shape[-1]
+
+    if permute_l:
+        if m < n:
+            gufunc = _impl.lu_permute_m
+        else:
+            gufunc = _impl.lu_permute_n
+    else:
+        if m < n:
+            gufunc = _impl.lu_m
+        else:
+            gufunc = _impl.lu_n
+
+    return gufunc(a, **kw_args)
+
+
+def qr(a, economy=False, **kw_args):
+    """
+    QR decomposition of general matrices on the inner dimensions.
+
+    Computes QR decomposition for a general M x N matrix i.e.
+
+    A = Q * R
+
+    where Q is a unitary matrix and R is a upper triangular matrix.
+
+    Parameters
+    ----------
+    a : (..., M, N) array
+        Matrices for which compute the qr decomposition
+    economy : bool
+        If True and M > N, return only first N columns of Q and first N
+        rows of R.
+
+    Returns
+    -------
+    Q : (..., M, M) for economy False (default)
+        (..., M, K) for economy True where K is min(M, N).
+
+    R : (..., M, N) for economy False (default)
+        (..., K, N) for economy True where K is min(M, N).
+
+    See Also
+    --------
+    cholesky : Computes cholesky decomposition
+
+    ldl      : Computes ldl decomposition
+
+    lu       : Compute LU decomposition using partial pivoting and
+               row interchange.
+
+    Notes
+    -----
+    Numpy broadcasting rules apply.
+
+    QR decomposition is performed using LAPACK routine _geqrf.
+
+    For elements where the LAPACK routine fails, the result will be set
+    to NaNs.
+
+    Implemented for types single, double, csingle and cdouble. Numpy conversion
+    rules apply.
+
+    Examples
+    --------
+    >>> a = np.random.randn(3, 4) + 1j*np.random.randn(3, 4)
+    >>> q, r = qr(a)
+    >>> (q.shape, r.shape) == ((3, 3), (3, 4))
+    True
+    >>> np.allclose(a, np.dot(q, r))
+    True
+
+    """
+    m = a.shape[-2]
+    n = a.shape[-1]
+
+    if m > n and economy:
+        gufunc = _impl.qr_n
+    else:
+        gufunc = _impl.qr_m
+
+    return gufunc(a, **kw_args)
 
 
 def svd(a, full_matrices=1, compute_uv=1 ,**kw_args):
@@ -740,6 +979,9 @@ def chosolve(A, B, UPLO='L', **kw_args):
     solve : solve a system using cholesky decomposition (for equations
             having symmetric/hermitian coefficient matrices)
 
+    solve_triangular : Solve the linear matrix equation A * X = B
+                       where A is a triangular matrix.
+
     Examples
     --------
     Solve the system of equations ``3 * x0 + x1 = 9`` and ``x0 + 2 * x1 = 8``:
@@ -767,6 +1009,107 @@ def chosolve(A, B, UPLO='L', **kw_args):
             gufunc = _impl.chosolve_lo
         else:
             gufunc = _impl.chosolve_up
+
+    return gufunc(A, B, **kw_args)
+
+
+def solve_triangular(A, B, UPLO='L',
+                     transpose_type='N', unit_diagonal=False, **kw_args):
+    """
+    Solve the linear matrix equation A * X = B on the inner dimensions
+    where A is a triangular matrix.
+
+    Parameters
+    ----------
+    A : (..., M, M) array
+        A triangular matrix.
+
+    B : (..., M, N) or (..., M,) array
+        Right hand side matrix in A * X = B.
+
+    UPLO : {'U', 'L'}, optional
+         Specifies whether the calculation is done with the lower
+         triangular part of the elements in `A` ('L', default) or
+         the upper triangular part ('U').
+
+    transpose_type : {'N', 'T', 'C'}, optional
+         Transpose type which decides equation to be solved.
+         N => No transpose i.e. solve A * X = B
+         T => Transpose i.e. solve A^T * X = B
+         C => Conjugate transpose i.e. solve A^H * X = B
+
+     unit_diagonal : bool, optional
+         If True, the diagonal elements of 'a' are assumed to be 1 and are
+         not referenced.
+
+    Returns
+    -------
+    X : (..., M, N) or (..., M,) array
+        Solutions to the system A * X = B for all elements in the outer
+        dimensions
+
+    Notes
+    -----
+    Numpy broadcasting rules apply.
+
+    The solutions are computed using LAPACK routine _trtrs.
+
+    For elements where the LAPACK routine fails, the result will be set
+    to NaNs.
+
+    Implemented for single, double, csingle and cdouble. Numpy conversion
+    rules apply.
+
+    See Also
+    --------
+    solve : Solves a systems using LU decomposition.
+
+    chosolve : solve a system using cholesky decomposition (for equations
+            having symmetric/hermitian coefficient matrices)
+
+    Examples
+    --------
+    Solve the system of equations ``3 * x0 + x1 = 9`` and ``x0 + 2 * x1 = 8``:
+
+    >>> a = np.array([[3,0], [1,2]])
+    >>> b = np.array([6,8])
+    >>> x = solve_triangular(a, b)
+    >>> x
+    array([ 2.,  3.])
+
+    Check that the solution is correct:
+
+    >>> np.allclose(np.dot(a, x), b)
+    True
+
+    """
+    uplo_choices = ['U', 'L']
+    transpose_choices = ['N', 'T', 'C']
+    diagonal_type = 'U' if unit_diagonal else 'N'
+
+    if UPLO not in uplo_choices:
+        raise ValueError("Invalid UPLO argument '%s', valid values are: %s" %
+                         (UPLO, uplo_choices))
+
+    if transpose_type not in transpose_choices:
+        raise ValueError("'Invalid TRANS argument '%s', valid values are: %s" %
+                         (transpose_type, transpose_choices))
+
+    # Keyword arguments are not passed to the extension code i.e. you can't
+    # use it to pass UPLO = 'U' to the extension code. As a workaround,
+    # invoke variant of  solve_triangular for each combination of params.
+    # Extension methods are named
+    # solve_triangular_{NDIM}{UPLO}{transpose_type}{diagonal_type} i.e. for
+    # UPLO='N', transpose_type='N' and diagonal_type='N', it has functions
+    # solve_triangular_0LNN or solve_triangular_1LNN depending on shape of B.
+    ext_method_prefix = 1
+    if len(B.shape) == (len(A.shape) - 1):
+        ext_method_prefix = "solve_triangular_0"
+    else:
+        ext_method_prefix = "solve_triangular_1"
+
+    gufunc = getattr(_impl,
+                     ext_method_prefix + UPLO + transpose_type + diagonal_type)
 
     return gufunc(A, B, **kw_args)
 
