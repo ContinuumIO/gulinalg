@@ -64,10 +64,12 @@ class TestInverseTriangular(TestCase):
         assert_allclose(inva, inva_unit)
 
     def test_upper_for_complex_type(self):
-        """Test A * A' = I where A's data type is complex"""
+        """Test A' where A's data type is complex"""
         a = np.array([[1 + 2j, 2 + 2j], [0, 1 + 1j]])
         inva = gulinalg.inv_triangular(a, UPLO='U')
-        assert_allclose(np.dot(a, inva), np.identity(2))
+        ref = np.array([[0.2-0.4j, -0.4+0.8j],
+                        [0.0+0.j, 0.5-0.5j]])
+        assert_allclose(inva, ref)
 
     def test_fortran_layout_matrix(self):
         """Input matrix is fortran layout matrix"""

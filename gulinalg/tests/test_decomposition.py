@@ -183,31 +183,36 @@ class TestQR(TestCase):
         a = np.array([[[3, 4, 5], [np.nan, 1, 3]],
                       [[3, 4, 5], [2, 1, 3]]])
         q, r = gulinalg.qr(a)
-        ref_q = np.array([[[np.nan, np.nan],
-                           [np.nan, np.nan]],
-                          [[-0.83205029, -0.5547002],
-                           [-0.5547002, 0.83205029]]])
-        ref_r = np.array([[[np.nan, np.nan, np.nan],
-                           [0., np.nan, np.nan]],
-                          [[-3.60555128, -3.88290137, -5.82435206],
-                           [0., -1.38675049, -0.2773501]]])
-        assert_allclose(q, ref_q)
-        assert_allclose(r, ref_r)
+        ref_q = np.array([[-0.83205029, -0.5547002],
+                          [-0.5547002, 0.83205029]])
+        ref_r = np.array([[-3.60555128, -3.88290137, -5.82435206],
+                          [0., -1.38675049, -0.2773501]])
+        # For NaN input i.e. a[0], expected output in ATLAS, MKL and SCIPY is:
+        # [[nan, nan], [nan, nan]]
+        # However openblas output is:
+        # [[nan, 0], [nan, 1]].
+        # As this test checks that nan in one input should not impact output
+        # for second input matrix, comparing output for second is enough.
+        assert_allclose(q[1], ref_q)
+        assert_allclose(r[1], ref_r)
 
     def test_infinity_handling(self):
         """Infinity in one output shouldn't contaminate remaining outputs"""
         a = np.array([[[3, 4, 5], [np.inf, 1, 3]],
                       [[3, 4, 5], [2, 1, 3]]])
         q, r = gulinalg.qr(a)
-        ref_q = np.array([[[np.nan, np.nan], [np.nan, np.nan]],
-                          [[-0.83205029, -0.5547002],
-                           [-0.5547002, 0.83205029]]])
-        ref_r = np.array([[[-np.inf, np.nan, np.nan],
-                           [0., np.nan, np.nan]],
-                          [[-3.60555128, -3.88290137, -5.82435206],
-                           [0., -1.38675049, -0.2773501]]])
-        assert_allclose(q, ref_q)
-        assert_allclose(r, ref_r)
+        ref_q = np.array([[-0.83205029, -0.5547002],
+                          [-0.5547002, 0.83205029]])
+        ref_r = np.array([[-3.60555128, -3.88290137, -5.82435206],
+                          [0., -1.38675049, -0.2773501]])
+        # For infinity input i.e. a[0], expected output in ATLAS, MKL and SCIPY
+        # is: [[nan, nan], [nan, nan]]
+        # However openblas output is:
+        # [[-0.707107, nan], [nan, nan]].
+        # As this test checks that infinity in one input should not impact
+        # output for second input, comparing output for second is enough.
+        assert_allclose(q[1], ref_q)
+        assert_allclose(r[1], ref_r)
 
 
 if __name__ == '__main__':
