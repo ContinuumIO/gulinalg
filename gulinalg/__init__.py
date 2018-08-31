@@ -36,6 +36,8 @@ implemented using BLAS:
 - doc1d
 - innerwt
 - matrix_multiply
+- matvec_multiply
+- update_rank1
 - quadratic_form
 
 Linear Algebra
@@ -47,14 +49,18 @@ implemented using LAPACK:
 - det
 - slogdet
 - cholesky
+- lu
+- qr
 - eig
 - eigvals
 - eigh
 - eigvalsh
 - solve
+- solve_triangular
 - svd
 - chosolve
 - inv
+- inv_triangular
 - poinv
 
 Extra Ufuncs (Fused Operations)
@@ -100,10 +106,10 @@ from __future__ import print_function, division, absolute_import
 
 
 from .gufunc_general import (inner1d, dotc1d, innerwt, matrix_multiply,
-                             quadratic_form)
-from .gufunc_linalg import (det, slogdet, cholesky, eig, eigvals, eigh,
-                            eigvalsh, solve, svd, chosolve, inv, poinv,
-                            ldl)
+                             matvec_multiply, update_rank1, quadratic_form)
+from .gufunc_linalg import (det, slogdet, cholesky, lu, qr, eig, eigvals,
+                            eigh, eigvalsh, solve, solve_triangular, svd,
+                            chosolve, inv, inv_triangular, poinv, ldl)
 from .ufunc_extras import (add3, multiply3, multiply3_add, multiply_add,
                            multiply_add2, multiply4, multiply4_add)
 from ._impl import STRICT_FP
@@ -113,4 +119,3 @@ from .testing import test
 from ._version import get_versions
 __version__ = get_versions()['version']
 del get_versions
-

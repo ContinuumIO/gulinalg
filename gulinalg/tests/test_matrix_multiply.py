@@ -235,6 +235,45 @@ class TestVector(TestCase):
         ref = np.stack([np.dot(a, b[i]) for i in range(len(b))])
         assert_allclose(res, ref)
 
+    def test_vectorized_matvec(self):
+        """test vectorized matrix multiply"""
+        a = np.ascontiguousarray(np.random.randn(10, M, N))
+        b = np.ascontiguousarray(np.random.randn(10, N))
+
+        res = gulinalg.matvec_multiply(a,b)
+        assert res.shape == (10, M)
+        ref = np.stack([np.dot(a[i], b[i]) for i in range(len(a))])
+        assert_allclose(res, ref)
+
+
+    def test_broadcast_matvec(self):
+        """test broadcast matrix multiply"""
+        a = np.ascontiguousarray(np.random.randn(M, N))
+        b = np.ascontiguousarray(np.random.randn(10, N))
+
+        res = gulinalg.matvec_multiply(a,b)
+        assert res.shape == (10, M)
+        ref = np.stack([np.dot(a, b[i]) for i in range(len(b))])
+        assert_allclose(res, ref)
+
+class TestMatvecNoCopy(TestCase):
+    def test_matvec_multiply_cf_c(self):
+        """matrix multiply C layout by FORTRAN layout vector, explicit C array output"""
+        a = np.ascontiguousarray(np.random.randint(100, size=(M,N)))
+        b = np.asfortranarray(np.random.randint(N, size=(N)))
+        res = np.zeros(M, order='C')
+        gulinalg.matvec_multiply(a,b, out=res)
+        ref = np.dot(a,b)
+        assert_allclose(res, ref)
+
+    def test_matvec_multiply_fc_f(self):
+        """matrix multiply FORTRAN layout by C layout vector, explicit FORTRAN array output"""
+        a = np.asfortranarray(np.random.randint(100, size=(M,N)))
+        b = np.ascontiguousarray(np.random.randint(N, size=(N)))
+        res = np.zeros(M, order='F')
+        gulinalg.matvec_multiply(a,b, out=res)
+        ref = np.dot(a,b)
+        assert_allclose(res, ref)
 
 if __name__ == '__main__':
     run_module_suite()

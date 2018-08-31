@@ -285,6 +285,15 @@ typedef int zpotri_type(char *uplo, int *n,
                         f2c_doublecomplex a[], int *lda,
                         int *info);
 
+typedef int slaswp_type(int *n, float *a, int *lda,
+                       int *k1, int *k2, int *ipiv, int *incx);
+typedef int dlaswp_type(int *n, double *a, int *lda,
+                       int *k1, int *k2, int *ipiv, int *incx);
+typedef int claswp_type(int *n, f2c_complex *a, int *lda,
+                       int *k1, int *k2, int *ipiv, int *incx);
+typedef int zlaswp_type(int *n, f2c_doublecomplex *a, int *lda,
+                       int *k1, int *k2, int *ipiv, int *incx);
+
 /* BLAS related prototypes as type */
 typedef int scopy_type(int *n,
                        float *sx, int *incx,
@@ -375,6 +384,149 @@ typedef int zgemm_type(char *transa, char *transb,
                        f2c_doublecomplex *beta,
                        f2c_doublecomplex *c, int *ldc);
 
+typedef int sgemv_type(char *trans,
+                       int *m, int *n,
+                       float *alpha,
+                       float *a, int *lda,
+                       float *x, int *incx,
+                       float *beta,
+                       float *y, int *incy);
+
+typedef int dgemv_type(char *trans,
+                       int *m, int *n,
+                       double *alpha,
+                       double *a, int *lda,
+                       double *x, int *incx,
+                       double *beta,
+                       double *y, int *incy);
+
+typedef int cgemv_type(char *trans,
+                       int *m, int *n,
+                       f2c_complex *alpha,
+                       f2c_complex *a, int *lda,
+                       f2c_complex *x, int *incx,
+                       f2c_complex *beta,
+                       f2c_complex *y, int *incy);
+
+typedef int zgemv_type(char *trans,
+                       int *m, int *n,
+                       f2c_doublecomplex *alpha,
+                       f2c_doublecomplex *a, int *lda,
+                       f2c_doublecomplex *x, int *incx,
+                       f2c_doublecomplex *beta,
+                       f2c_doublecomplex *y, int *incy);
+
+typedef int sger_type(int *m, int *n,
+                      float *alpha,
+                      float *x, int *incx,
+                      float *y, int *incy,
+                      float *a, int *lda);
+
+typedef int dger_type(int *m, int *n,
+                      double *alpha,
+                      double *x, int *incx,
+                      double *y, int *incy,
+                      double *a, int *lda);
+
+typedef int cgeru_type(int *m, int *n,
+                       f2c_complex *alpha,
+                       f2c_complex *x, int *incx,
+                       f2c_complex *y, int *incy,
+                       f2c_complex *a, int *lda);
+
+typedef int zgeru_type(int *m, int *n,
+                       f2c_doublecomplex *alpha,
+                       f2c_doublecomplex *x, int *incx,
+                       f2c_doublecomplex *y, int *incy,
+                       f2c_doublecomplex *a, int *lda);
+
+typedef int cgerc_type(int *m, int *n,
+                       f2c_complex *alpha,
+                       f2c_complex *x, int *incx,
+                       f2c_complex *y, int *incy,
+                       f2c_complex *a, int *lda);
+
+typedef int zgerc_type(int *m, int *n,
+                       f2c_doublecomplex *alpha,
+                       f2c_doublecomplex *x, int *incx,
+                       f2c_doublecomplex *y, int *incy,
+                       f2c_doublecomplex *a, int *lda);
+
+typedef int sgeqrf_type(int *m, int *n,
+                        float *a,   int *lda,
+                        float *tau, float *work,
+                        int *lwork, int *info);
+
+typedef int dgeqrf_type(int *m, int *n,
+                        double *a,   int *lda,
+                        double *tau, double *work,
+                        int *lwork,  int *info);
+
+typedef int cgeqrf_type(int *m, int *n,
+                        f2c_complex *a,   int *lda,
+                        f2c_complex *tau, f2c_complex *work,
+                        int *lwork, int *info);
+
+typedef int zgeqrf_type(int *m, int *n,
+                        f2c_doublecomplex *a,   int *lda,
+                        f2c_doublecomplex *tau, f2c_doublecomplex *work,
+                        int *lwork, int *info);
+
+typedef int sorgqr_type(int *m, int *n, int *k,
+                        float *a,   int *lda,
+                        float *tau, float *work,
+                        int *lwork, int *info);
+
+typedef int dorgqr_type(int *m, int *n, int *k,
+                        double *a,   int *lda,
+                        double *tau, double *work,
+                        int *lwork,  int *info);
+
+typedef int cungqr_type(int *m, int *n, int *k,
+                        f2c_complex *a,   int *lda,
+                        f2c_complex *tau, f2c_complex *work,
+                        int *lwork, int *info);
+
+typedef int zungqr_type(int *m, int *n, int *k,
+                        f2c_doublecomplex *a,   int *lda,
+                        f2c_doublecomplex *tau, f2c_doublecomplex *work,
+                        int *lwork, int *info);
+
+typedef int strtri_type(char *uplo, char *diag, int *n,
+                        float *a,  int *lda,   int *info);
+
+typedef int dtrtri_type(char *uplo, char *diag, int *n,
+                        double *a,  int *lda,   int *info);
+
+typedef int ctrtri_type(char *uplo,     char *diag, int *n,
+                        f2c_complex *a, int *lda,   int *info);
+
+typedef int ztrtri_type(char *uplo,           char *diag, int *n,
+                        f2c_doublecomplex *a, int *lda,   int *info);
+
+typedef int strtrs_type(char *uplo, char* trans, char *diag,
+                        int *n, int* nrhs,
+                        float *a, int *lda,
+                        float *b, int *ldb,
+                        int *info);
+
+typedef int dtrtrs_type(char *uplo, char* trans, char *diag,
+                        int *n, int* nrhs,
+                        double *a, int *lda,
+                        double *b, int *ldb,
+                        int *info);
+
+typedef int ctrtrs_type(char *uplo, char* trans, char *diag,
+                        int *n, int* nrhs,
+                        f2c_complex *a, int *lda,
+                        f2c_complex *b, int *ldb,
+                        int *info);
+
+typedef int ztrtrs_type(char *uplo, char* trans, char *diag,
+                        int *n, int* nrhs,
+                        f2c_doublecomplex *a, int *lda,
+                        f2c_doublecomplex *b, int *ldb,
+                        int *info);
 
 /* LAPACK related external symbols */
 extern sgeev_type FNAME(sgeev);
@@ -415,6 +567,26 @@ extern spotri_type FNAME(spotri);
 extern dpotri_type FNAME(dpotri);
 extern cpotri_type FNAME(cpotri);
 extern zpotri_type FNAME(zpotri);
+extern sgeqrf_type FNAME(sgeqrf);
+extern dgeqrf_type FNAME(dgeqrf);
+extern cgeqrf_type FNAME(cgeqrf);
+extern zgeqrf_type FNAME(zgeqrf);
+extern sorgqr_type FNAME(sorgqr);
+extern dorgqr_type FNAME(dorgqr);
+extern cungqr_type FNAME(cungqr);
+extern zungqr_type FNAME(zungqr);
+extern strtri_type FNAME(strtri);
+extern dtrtri_type FNAME(dtrtri);
+extern ctrtri_type FNAME(ctrtri);
+extern ztrtri_type FNAME(ztrtri);
+extern strtrs_type FNAME(strtrs);
+extern dtrtrs_type FNAME(dtrtrs);
+extern ctrtrs_type FNAME(ctrtrs);
+extern ztrtrs_type FNAME(ztrtrs);
+extern slaswp_type FNAME(slaswp);
+extern dlaswp_type FNAME(dlaswp);
+extern claswp_type FNAME(claswp);
+extern zlaswp_type FNAME(zlaswp);
 
 /* BLAS related extern symbols */
 extern scopy_type FNAME(scopy);
@@ -435,7 +607,16 @@ extern sgemm_type FNAME(sgemm);
 extern dgemm_type FNAME(dgemm);
 extern cgemm_type FNAME(cgemm);
 extern zgemm_type FNAME(zgemm);
-
+extern sgemv_type FNAME(sgemv);
+extern dgemv_type FNAME(dgemv);
+extern cgemv_type FNAME(cgemv);
+extern zgemv_type FNAME(zgemv);
+extern sger_type FNAME(sger);
+extern dger_type FNAME(dger);
+extern cgeru_type FNAME(cgeru);
+extern zgeru_type FNAME(zgeru);
+extern cgerc_type FNAME(cgerc);
+extern zgerc_type FNAME(zgerc);
 
 
 #define LAPACK_T(FUNC)                                          \
@@ -1252,7 +1433,7 @@ static inline void
         npy_intp is1=steps[0], is2=steps[1];
         BEGIN_OUTER_LOOP_3
             int i;
-            char *ip1=args[0], *ip2=args[1], *op=args[2];
+            char *ip1=args[0], *ip2=args[1];
             @typ@ sum = @zero@;
             for (i = 0; i < dim; i++) {
                 @typ@ prod = @mul@(*(@typ@ *)ip1, *(@typ@*)ip2);
@@ -1403,13 +1584,8 @@ matrix_desc_init(matrix_desc *mtxd,
        we'll try to figure out if we can avoid the copy by using either the
        straight matrix or its transpose.
     */ 
-    npy_int row_stride, col_stride, min_stride;
-    fortran_int lead;
-    int sot_mask;
-    int requires_copy;
-
-    col_stride = steps[0];
-    row_stride = steps[1];
+    npy_int col_stride = steps[0];
+    npy_int row_stride = steps[1];
 
     /* check if we can use the input buffer directly */
     if (col_stride <= row_stride) {
@@ -1621,6 +1797,268 @@ static void
 
         release_gemm_params(&params);
     }
+}
+
+/**end repeat**/
+
+
+/* -------------------------------------------------------------------------- */
+                        /* Matrix Vector Multiply */
+
+typedef struct gemv_params_struct
+{
+    void *A;
+    fortran_int LDA;
+    fortran_int M;
+    fortran_int N;
+    char TRANS;
+
+    void *allocated_data;
+} GEMV_PARAMS_t;
+
+static inline int
+init_gemv_params(GEMV_PARAMS_t *params,
+                 fortran_int m,
+                 fortran_int n,
+                 npy_intp* steps,
+                 size_t sot)
+{
+    npy_uint8 *mem_buff = NULL;
+
+    /*
+     * Matrix initialization sets size to non-zero if a is not a dense matrix
+     * e.g. say user provided 2-D slice of matrix. Since gemv expects continuous
+     * array, allocate one.
+     */
+    matrix_desc a;
+    matrix_desc_init(&a, steps + 0, sot, m, n);
+    if (a.size)
+    {
+        npy_uint8 *current;
+        mem_buff = malloc(a.size);
+        if (!mem_buff) {
+            memset(params, 0, sizeof(*params));
+            return 0;
+        }
+
+        current = mem_buff;
+        current = matrix_desc_assign_buff(&a, current);
+    }
+
+    /*
+     * BLAS routine GEMV assumes that M and N are rows and columns of a
+     * Fortran matrix A. If the input matrix A is a transposed Fortran matrix,
+     * swap dimensions m and n before passing to the routine.
+     */
+    if (a.transposed) {
+        fortran_int tmp;
+        tmp = m;
+        m = n;
+        n = tmp;
+    }
+
+    params->A = a.buff;
+    params->LDA = a.lead;
+    params->M = m;
+    params->N = n;
+    params->TRANS="NT"[a.transposed];  /* Whether A is a transposed matrix. */
+    params->allocated_data = mem_buff;
+
+    return 1;
+ }
+
+static inline void
+release_gemv_params(GEMV_PARAMS_t * params)
+{
+    free(params->allocated_data);
+    params->allocated_data = NULL;
+}
+
+/**begin repeat
+   #TYPE=FLOAT,DOUBLE,CFLOAT,CDOUBLE#
+   #typ=npy_float,npy_double,npy_cfloat,npy_cdouble#
+   #one=s_one,d_one,c_one.array,z_one.array#
+   #zero=s_zero,d_zero,c_zero.array,z_zero.array#
+   #GEMV=sgemv,dgemv,cgemv,zgemv#
+*/
+
+static void
+@TYPE@_matvec_multiply(char **args,
+                       npy_intp *dimensions,
+                       npy_intp *steps,
+                       void *NPY_UNUSED(func))
+{
+    GEMV_PARAMS_t params;
+    fortran_int m, n;
+
+    INIT_OUTER_LOOP_3
+
+    m = (fortran_int) dimensions[0];
+    n = (fortran_int) dimensions[1];
+    if (m == 0 || n == 0)
+        return; /* output array will be empty, as one of its inner dimensions will be 0 */
+
+    size_t sot = sizeof(@typ@);
+
+    if (init_gemv_params(&params, m, n, steps, sot))
+    {
+        LINEARIZE_DATA_t a_in;
+        if (params.A) {
+            /*
+             * Input matrix isn't dense. Since BLAS routine expects that in
+             * contiguous memory locations, flatten input into params.A.
+             */
+            init_linearize_data(&a_in, n, m, steps[1], steps[0]);
+        }
+
+        BEGIN_OUTER_LOOP_3
+            /* Acutal flattening happens here. */
+            @typ@ *A = linearize_@TYPE@_matrix(params.A, args[0], &a_in);
+            fortran_int incx = steps[2] / sot;
+            fortran_int incy = steps[3] / sot;
+
+            /*
+             * Invoke Fortran function GEMV.
+             * It's signature is (M, N) x (N, 1) -> (M, 1)
+             */
+            FNAME(@GEMV@)(&params.TRANS,
+                          &params.M, &params.N,
+                          (void*)&@one@,  // alpha = 1, same as matrix_multiply.
+                          (void*)A, &params.LDA,
+                          (void*)args[1], &incx,
+                          (void*)&@zero@, // beta = 0, same as matrix_multiply.
+                          (void*)args[2], &incy);
+        END_OUTER_LOOP
+
+        release_gemv_params(&params);
+    }
+}
+
+/**end repeat**/
+
+
+/* -------------------------------------------------------------------------- */
+                        /* Rank 1 update */
+
+typedef struct ger_params_struct
+{
+    void *A;
+    fortran_int LDA;
+    fortran_int M;
+    fortran_int N;
+} GER_PARAMS_t;
+
+static inline int
+init_ger_params(GER_PARAMS_t *params,
+                fortran_int m,
+                fortran_int n,
+                npy_intp* steps,
+                size_t sot)
+{
+    npy_uint8 *mem_buff = malloc(m * n * sot);
+    if (!mem_buff) {
+        memset(params, 0, sizeof(*params));
+        return 0;
+    }
+
+    params->A = mem_buff;
+    params->LDA = m;
+    params->M = m;
+    params->N = n;
+
+    return 1;
+}
+
+static inline void
+release_ger_params(GER_PARAMS_t * params)
+{
+    free(params->A);
+    params->A = NULL;
+}
+
+/**begin repeat
+   #TYPE=FLOAT,DOUBLE,CFLOAT,CDOUBLE#
+   #typ=npy_float,npy_double,npy_cfloat,npy_cdouble#
+   #one=s_one,d_one,c_one.array,z_one.array#
+   #zero=s_zero,d_zero,c_zero.array,z_zero.array#
+   #GER=sger,dger,cgeru,zgeru#
+   #GERC=sger,dger,cgerc,zgerc#
+*/
+
+static void
+@TYPE@_update_rank1_common(int conjugate,
+                           char **args,
+                           npy_intp *dimensions,
+                           npy_intp *steps)
+{
+    /*
+     * For complex numbers, if conjugate is true, invoke _gerc function
+     * which uses conjugate transpose of second argument. Otherwise invoke
+     * _geru which does normal transpose.
+     */
+    GER_PARAMS_t params;
+    fortran_int m, n;
+
+    INIT_OUTER_LOOP_4
+
+    m = (fortran_int) dimensions[0];
+    n = (fortran_int) dimensions[1];
+    if (m == 0 || n == 0)
+        return; /* output array will be empty, as one of its inner dimensions will be 0 */
+
+    size_t sot = sizeof(@typ@);
+
+    if (init_ger_params(&params, m, n, steps, sot))
+    {
+        LINEARIZE_DATA_t a_in, r_out;
+        init_linearize_data(&a_in, n, m, steps[3], steps[2]);
+        init_linearize_data(&r_out, n, m, steps[5], steps[4]);
+
+        BEGIN_OUTER_LOOP_4
+            linearize_@TYPE@_matrix(params.A, args[2], &a_in);
+            fortran_int incx = steps[0] / sot;
+            fortran_int incy = steps[1] / sot;
+
+            /*
+             * To get rank1 update, invoke ger_ for real numbers and _gerc/_geru
+             * for complex numbers. Signature of rank1 update is
+             * (M, N) x (N, 1) -> (M, 1)
+             */
+            if (conjugate) {
+                FNAME(@GERC@)(&params.M, &params.N,
+                             (void*)&@one@, // alpha
+                             (void*)args[0], &incx,
+                             (void*)args[1], &incy,
+                             params.A, &params.LDA);
+            }
+            else {
+                FNAME(@GER@)(&params.M, &params.N,
+                             (void*)&@one@, // alpha
+                             (void*)args[0], &incx,
+                             (void*)args[1], &incy,
+                             params.A, &params.LDA);
+            }
+
+            /* Copy Fortran matrix returned by GER to output argument */
+            delinearize_@TYPE@_matrix(args[3], params.A, &r_out);
+        END_OUTER_LOOP
+
+        release_ger_params(&params);
+    }
+}
+
+static void
+@TYPE@_update_rank1_conjugate(char     **args, npy_intp *dimensions,
+                              npy_intp *steps, void *NPY_UNUSED(func))
+{
+    @TYPE@_update_rank1_common(1, args, dimensions, steps);
+}
+
+static void
+@TYPE@_update_rank1(char     **args, npy_intp *dimensions,
+                    npy_intp *steps, void *NPY_UNUSED(func))
+{
+    @TYPE@_update_rank1_common(0, args, dimensions, steps);
 }
 
 /**end repeat**/
@@ -2721,6 +3159,501 @@ static void
 }
 
 /**end repeat**/
+
+
+/* -------------------------------------------------------------------------- */
+                       /* LU decomposition */
+
+typedef struct getrf_params_struct
+{
+    void *A;
+    fortran_int *IPIV;
+    fortran_int M;
+    fortran_int N;
+    fortran_int LDA;
+} GETRF_PARAMS_t;
+
+static inline int
+init_getrf_func(GETRF_PARAMS_t *params, fortran_int M, fortran_int N,
+                 npy_intp *steps, size_t sot)
+{
+    const size_t a_size = M * N * sot;
+    fortran_int min_m_n = M < N ? M:N;
+    const size_t ipiv_size = min_m_n * sizeof(fortran_int);
+    npy_uint8 *mem_buff = malloc(a_size + ipiv_size);
+
+    if (mem_buff == NULL) {
+        free(mem_buff);
+        memset(params, 0, sizeof(*params));
+        return 0;
+    }
+
+    params->A = mem_buff;
+    params->IPIV = (fortran_int *)(mem_buff + a_size);
+    params->M = M;
+    params->N = N;
+    params->LDA = M;
+
+    return 1;
+}
+
+static inline void
+release_getrf_func(GETRF_PARAMS_t *params)
+{
+    free(params->A); /* this points to the whole block */
+    memset(params, 0, sizeof(*params));
+}
+
+/**begin repeat
+   #TYPE=FLOAT,DOUBLE,CFLOAT,CDOUBLE#
+   #ftyp=fortran_real, fortran_doublereal,
+         fortran_complex, fortran_doublecomplex#
+   #lapack_func=sgetrf,dgetrf,cgetrf,zgetrf#
+   #cblas_type=s,d,c,z#
+   #laswp=slaswp,dlaswp,claswp,zlaswp#
+*/
+
+static void
+@TYPE@_lu_common(int permute, char **args, npy_intp *dimensions, npy_intp *steps)
+{
+    /*
+     * If permute is False(0), decompose matrix into Permutation matrix,
+     * lower triangular and upper triangular matrix i.e. A = P * L * U.
+     * Otherwise, permute L matrix using IPIV and return permuted L and U
+     * i.e. A = L * U.
+     */
+    GETRF_PARAMS_t params;
+    int error_occurred = get_fp_invalid_and_clear();
+
+   /*
+    * Variables to store non-core dimensions in a gufunc. It's easier to
+    * explain using example. Say input is an array A of shape (10, M, N).
+    * 10 is non-core dimension and MxN is the core dimension of the matrix
+    * to be decomposed in this method. outer_dim is non-core dimension i.e.
+    *    outer_dim = 10
+    * outer_steps are strides for the input and outputs i.e. if above array
+    * is decomposed to matrices L and U of shapes (10, M, N) and U (10, N, N)
+    * respectively, for double data type matrix outer steps are:
+    *   outer_step[0] = 10 * M * N * 8 (belongs to A)
+    *   outer_step[1] = 10 * M * N * 8 (belongs to L)
+    *   outer_Step[2] = 10 * N * N * 8 (belongs to U)
+    *
+    * num_in_out_params is the total number of input and outputs e.g.
+    * it's 4 if A decomposes to P, L and U, and 3 if decomposes to L and U.
+    */
+    size_t outer_dim = *dimensions++;
+    ptrdiff_t outer_steps[4];
+    size_t num_in_out_params  = permute ? 3 : 4;
+    size_t i;
+    for (i = 0; i < num_in_out_params; ++i) {
+        outer_steps[i] = (ptrdiff_t)steps[i];
+    }
+
+    /*
+     * We got strides for outer or non-core dimensions. Move forward steps
+     * to give strides for core dimensions i.e. for matrices in input as well
+     * as output.
+     */
+    steps += num_in_out_params;
+
+    /*
+     * Since code above incremented dimensions pointer to get outer dimension,
+     * now it points to core dimensions.
+     */
+    fortran_int m, n;
+    m = (fortran_int) dimensions[0];
+    n = (fortran_int) dimensions[1];
+
+    if (init_getrf_func(&params, m, n, steps, sizeof(@ftyp@)))
+    {
+        LINEARIZE_DATA_t a_in, p_out, l_out, u_out;
+        fortran_int k = m < n ? m : n;
+        init_linearize_data(&a_in,  n, m, steps[1], steps[0]);
+        if (permute) {
+            init_linearize_data(&l_out, k, m, steps[3], steps[2]);
+            init_linearize_data(&u_out, n, k, steps[5], steps[4]);
+        }
+        else {
+            init_linearize_data(&p_out, m, m, steps[3], steps[2]);
+            init_linearize_data(&l_out, k, m, steps[5], steps[4]);
+            init_linearize_data(&u_out, n, k, steps[7], steps[6]);
+        }
+
+        /*
+         * Repeat core operation i.e. LU decomposition of the matrix
+         * for outer/non-core dimension.
+         */
+        for (i = 0; i < outer_dim; ++i) {
+            fortran_int info;
+            linearize_@TYPE@_matrix(params.A, args[0], &a_in);
+            LAPACK(@lapack_func@)(&params.M, &params.N,
+                                  params.A, &params.LDA,
+                                  params.IPIV, &info);
+
+            if (!info) {
+                /*
+                 * Allocate space for upper and lower triangular matrices.
+                 * Using calloc as these matrices need to be zero
+                 * initialized e.g. upper part of the lower triangular matrix.
+                 * calloc does it very fast.
+                 */
+                void *L = calloc(m * k, sizeof(@ftyp@));
+                void *U = calloc(k * n, sizeof(@ftyp@));
+                if (L == NULL || U == NULL) {
+                    error_occurred = 1;
+                    goto error;
+                }
+
+                /* Copy lower triangular matrix and set diagonal to 1. */
+                int j, l;
+                for (j = 0; j < k; j++) {
+                    @ftyp@ *element = (@ftyp@ *)L + (m + 1) * j;
+                    *element = *(@ftyp@*)&@cblas_type@_one;
+
+                    /* Copy non-diagonal elements. */
+                    for (l = j+1; l < m; l++) {
+                        element = (@ftyp@ *)L + m * j + l;
+                        *element = *((@ftyp@ *)params.A + m * j + l);
+                    }
+                }
+
+                /* Copy upper triangular matrix. */
+                for (j = 0; j < k; j++) {
+                    for (l = j; l < n; l++) {
+                        @ftyp@ *element = (@ftyp@ *)U + k * l + j;
+                        *element = *((@ftyp@ *)params.A + m * l + j);
+                    }
+                }
+
+                int arg_i = 1;  /* Index to copy calculated values to output */
+                fortran_int one = 1;
+                fortran_int minus_one = -1;
+                if (!permute) {
+                    int *permutation_buf = (int*) calloc(m, sizeof(int));
+                    if (permutation_buf == NULL) {
+                        error_occurred = 1;
+                        goto error;
+                    }
+
+                    /*
+                     * To get permutation matrix, ith row is swapped with ipiv[i]
+                     * row for all entries in ipiv. For long rows, swapping complete
+                     * row is costly. Instead, permute permutation_buf and use that
+                     * to set location of ones in the final permutation matrix.
+                     */
+                    void *P = calloc(m * m, sizeof(@ftyp@));
+                    if (P == NULL) {
+                        free(permutation_buf);
+                        error_occurred = 1;
+                        goto error;
+                    }
+                    for (l = 0; l < m; ++l) {
+                        permutation_buf[l] = l;
+                    }
+                    for (l = 0; l < k; ++l) {
+                        /* IPIV indices start with 1 instead of 0 */
+                        int              t = params.IPIV[l] - 1;
+                        int            tmp = permutation_buf[l];
+                        permutation_buf[l] = permutation_buf[t];
+                        permutation_buf[t] = tmp;
+                    }
+                    /*
+                     * Turn the permutation_buf into a matrix.
+                     */
+                    for (l = 0; l < m; l++) {
+                        @ftyp@ *element = (@ftyp@ *)P + m * l + permutation_buf[l];
+                        *element = *(@ftyp@*)&@cblas_type@_one;
+                    }
+
+                    /* Copy P to corresponding output argument. */
+                    delinearize_@TYPE@_matrix(args[arg_i++], P, &p_out);
+
+                    /* P is copied to output, free memory. */
+                    free(permutation_buf);
+                    free(P);
+                }
+                else {
+                    /* Permute rows of L using IPIV. */
+                    LAPACK(@laswp@)(&k, L, &m, &one, &k, params.IPIV, &minus_one);
+                }
+
+                /* Copy L and U to corresponding output arguments. */
+                delinearize_@TYPE@_matrix(args[arg_i++], L, &l_out);
+                delinearize_@TYPE@_matrix(args[arg_i], U, &u_out);
+
+                // Free temporary L and U matrices.
+                free(L);
+                free(U);
+            }
+            else {
+                error_occurred = 1;
+            }
+
+        error:
+            if (error_occurred) {
+                int arg_i = 1;
+                if (!permute) {
+                    nan_@TYPE@_matrix(args[arg_i++], &p_out);
+                }
+                nan_@TYPE@_matrix(args[arg_i++], &l_out);
+                nan_@TYPE@_matrix(args[arg_i], &u_out);
+            }
+
+            /* Move pointers to next non-core dimension */
+            update_pointers((npy_uint8**)args, outer_steps, num_in_out_params);
+        }
+
+        release_getrf_func(&params);
+    }
+
+    set_fp_invalid_or_clear(error_occurred);
+}
+
+static void
+@TYPE@_lu(char     **args, npy_intp *dimensions,
+          npy_intp *steps, void *NPY_UNUSED(func))
+{
+    @TYPE@_lu_common(0, args, dimensions, steps);
+}
+
+static void
+@TYPE@_lu_permute(char     **args, npy_intp *dimensions,
+                  npy_intp *steps, void *NPY_UNUSED(func))
+{
+    @TYPE@_lu_common(1, args, dimensions, steps);
+}
+
+/**end repeat**/
+
+
+/* -------------------------------------------------------------------------- */
+                       /* QR decomposition */
+
+typedef struct geqrf_params_struct
+{
+    void *A;
+    void *TAU;
+    void *WORK;
+    fortran_int M;
+    fortran_int N;
+    fortran_int LDA;
+    fortran_int LWORK;
+} GEQRF_PARAMS_t;
+
+/**begin repeat
+   #TYPE=FLOAT,DOUBLE, CFLOAT, CDOUBLE#
+   #ftyp=fortran_real, fortran_doublereal,
+         fortran_complex, fortran_doublecomplex#
+   #fbasetyp=fortran_real, fortran_doublereal,
+             fortran_real, fortran_doublereal#
+   #cblas_type=s,d,c,z#
+   #lapack_func=sgeqrf, dgeqrf, cgeqrf, zgeqrf#
+   #orgqr=sorgqr, dorgqr, cungqr, zungqr#
+ */
+
+static inline int
+init_@lapack_func@(GEQRF_PARAMS_t *params, fortran_int M, fortran_int N)
+{
+    /*
+     * First get the optimal size of work array. geqrf calculates this by
+     * passing LWORK = -1. As query is meant to get optimal work size and
+     * not for actual decomposition, no need to pass matrices.
+     */
+    @ftyp@ work;
+    fortran_int lwork = -1;
+    fortran_int info;
+    LAPACK(@lapack_func@)(&M, &N, NULL, &M, NULL, &work, &lwork, &info);
+    if (info != 0) {
+        memset(params, 0, sizeof(*params));
+        return 0;
+    }
+
+    fortran_int min_m_n = M < N ? M : N;
+    size_t a_size       = M * N * sizeof(@ftyp@);
+    size_t tau_size     = min_m_n * sizeof(@ftyp@);
+    size_t work_size    = (size_t)*(@fbasetyp@*)&work * sizeof(@ftyp@);
+    npy_uint8 *mem_buff = malloc(a_size + tau_size + work_size);
+    if (mem_buff == NULL) {
+        return 0;
+    }
+
+    params->A     = mem_buff;
+    params->TAU   = mem_buff + a_size;
+    params->WORK  = mem_buff + a_size + tau_size;
+    params->M     = M;
+    params->N     = N;
+    params->LDA   = M;
+    params->LWORK = work_size;
+
+    return 1;
+}
+
+static inline void
+release_@lapack_func@(GEQRF_PARAMS_t *params)
+{
+    free(params->A); /* this points to the whole block */
+    memset(params, 0, sizeof(*params));
+}
+
+static void
+@TYPE@_qr(int enforce_m, char **args, npy_intp *dimensions, npy_intp *steps)
+{
+    GEQRF_PARAMS_t params;
+    int error_occurred = get_fp_invalid_and_clear();
+    fortran_int m, n, min_m_n, k;
+
+    INIT_OUTER_LOOP_3
+    m = (fortran_int) dimensions[0];
+    n = (fortran_int) dimensions[1];
+    min_m_n = m < n ? m : n;
+    k = min_m_n;
+
+    /* Expected output Q is a MxM orthogonal matrix, not MxN matrix. */
+    if (enforce_m) {
+        k = m;
+    }
+
+    if (init_@lapack_func@(&params, m, n))
+    {
+        LINEARIZE_DATA_t a_in, q_out, r_out;
+        init_linearize_data(&a_in,  n, m, steps[1], steps[0]);
+        init_linearize_data(&q_out, k, m, steps[3], steps[2]);
+        init_linearize_data(&r_out, n, k, steps[5], steps[4]);
+
+        BEGIN_OUTER_LOOP_3
+            fortran_int info;
+            linearize_@TYPE@_matrix(params.A, args[0], &a_in);
+            LAPACK(@lapack_func@)(&params.M, &params.N,
+                                  params.A, &params.LDA,
+                                  params.TAU, params.WORK,
+                                  &params.LWORK, &info);
+
+            /*
+             * Elements on and above diagonal of A now contain trapezoidal
+             * matrix R while those below diagonal with array TAU form
+             * orthogonal matrix Q.
+             */
+            if (!info)
+            {
+                // Using calloc as R is a trapezoidal matrix, so lower
+                // triangle should be zero initialized.
+                void *R = calloc(k * n, sizeof(@ftyp@));
+                if (R == NULL) {
+                    error_occurred = 1;
+                    goto error;
+                }
+
+                // Copy the upper triangular matrix.
+                int i, j;
+                for (j = 0; j < k; j++) {
+                    for (i = j; i < n; i++) {
+                        @ftyp@ *element = (@ftyp@ *)R + k * i + j;
+                        *element = *((@ftyp@ *)params.A + m * i + j);
+                    }
+                }
+
+                // LAPACK creates Q matrix from A and TAU in-place. So if
+                // expected Q matrix is a MxM orthogonal Matrix where M > N,
+                // allocate space and copy from MxN matrix A.
+                void *Q = params.A;
+                void *Q_buf = NULL;
+                if (k > n) {
+                    Q_buf = malloc(k * k * sizeof(@ftyp@));
+                    if (Q_buf == NULL) {
+                        error_occurred = 1;
+                        goto error;
+                    }
+
+                    Q = Q_buf;
+                    for (i = 0; i < params.M * params.N; i++) {
+                        *((@ftyp@ *)Q + i) = *((@ftyp@ *)params.A + i);
+                    }
+                }
+
+                /*
+                 * Call orgqr to get Q matrix from lower triangle of A and TAU.
+                 * First get the appropriate workspace for orgqr as workspace
+                 * allocated for geqrf won't work, at least for MKL version.
+                 */
+                @ftyp@ work;
+                fortran_int lwork = -1;
+                LAPACK(@orgqr@)(&params.M,
+                                &k,
+                                &min_m_n,
+                                NULL,
+                                &params.LDA,
+                                NULL,
+                                &work,
+                                &lwork,
+                                &info);
+
+                if (info != 0) {
+                    free(Q_buf);
+                    free(R);
+                    error_occurred = 1;
+                    goto error;
+                }
+
+                lwork = *(@fbasetyp@*)&work * sizeof(@ftyp@);
+                void *work_buff = malloc(lwork);
+                LAPACK(@orgqr@)(&params.M,
+                                &k,
+                                &min_m_n,
+                                Q,
+                                &params.LDA,
+                                params.TAU,
+                                work_buff,
+                                &lwork,
+                                &info);
+
+                if (info) {
+                    free(Q_buf);
+                    free(R);
+                    free(work_buff);
+                    error_occurred = 1;
+                    goto error;
+                }
+
+                // Copy matrices to corresponding output arguments.
+                delinearize_@TYPE@_matrix(args[1], Q, &q_out);
+                delinearize_@TYPE@_matrix(args[2], R, &r_out);
+
+                // Release Q buffer and R as they have already been
+                // copied to output.
+                free(Q_buf);
+                free(R);
+                free(work_buff);
+            }
+        error:
+            if (error_occurred)
+            {
+                nan_@TYPE@_matrix(args[1], &q_out);
+                nan_@TYPE@_matrix(args[2], &r_out);
+            }
+        END_OUTER_LOOP
+
+        release_@lapack_func@(&params);
+    }
+
+    set_fp_invalid_or_clear(error_occurred);
+}
+
+static void
+@TYPE@_qr_m(char     **args, npy_intp *dimensions,
+            npy_intp *steps, void *NPY_UNUSED(func))
+{
+    @TYPE@_qr(1, args, dimensions, steps);
+}
+
+static void
+@TYPE@_qr_n(char     **args, npy_intp *dimensions,
+            npy_intp *steps, void *NPY_UNUSED(func))
+{
+    @TYPE@_qr(0, args, dimensions, steps);
+}
+
+/**end repeat**/
+
 
 /* -------------------------------------------------------------------------- */
                           /* eig family  */
@@ -4140,6 +5073,281 @@ static void
 /**end repeat**/
 
 /* -------------------------------------------------------------------------- */
+                 /* inv_triangular (using trtri)  */
+
+typedef struct trtri_params_struct {
+    void *A;
+    fortran_int N;
+    fortran_int LDA;
+} TRTRI_PARAMS_t;
+
+/**begin repeat
+   #TYPE=FLOAT,DOUBLE,CFLOAT,CDOUBLE#
+   #ftyp=float,double,COMPLEX_t,DOUBLECOMPLEX_t#
+   #lapack_func=strtri,dtrtri,ctrtri,ztrtri#
+ */
+static inline int init_@lapack_func@(TRTRI_PARAMS_t *params,
+                                     fortran_int N)
+{
+    npy_uint8 *mem_buff = malloc(N*N*sizeof(@ftyp@));
+    if (!mem_buff) {
+        free(mem_buff);
+        memset(params, 0, sizeof(*params));
+        return 0;
+    }
+
+    params->A = (void*)mem_buff;
+    params->N = N;
+    params->LDA = N;
+
+    return 1;
+}
+
+static inline void release_@lapack_func@(TRTRI_PARAMS_t *params)
+{
+    free(params->A);
+    memset(params, 0, sizeof(*params));
+    return;
+}
+
+static inline void @TYPE@_inv_triangular(char uplo,
+                                         char diag,
+                                         char **args,
+                                         npy_intp *dimensions,
+                                         npy_intp *steps)
+{
+    TRTRI_PARAMS_t params;
+    int error_occurred = get_fp_invalid_and_clear();
+    fortran_int n;
+    INIT_OUTER_LOOP_2
+
+    n = (fortran_int)dimensions[0];
+    if (init_@lapack_func@(&params, n)) {
+        LINEARIZE_DATA_t a_in, r_out;
+
+        init_linearize_data(&a_in, n, n, steps[1], steps[0]);
+        init_linearize_data(&r_out, n, n, steps[3], steps[2]);
+
+        BEGIN_OUTER_LOOP_2
+            fortran_int info;
+            // gufunc shouldn't modify argument in-place, so get a copy.
+            linearize_@TYPE@_matrix(params.A, args[0], &a_in);
+            // Invoke LAPACK function trtri to get inverse.
+            LAPACK(@lapack_func@)(&uplo, &diag, &params.N,
+                                  params.A, &params.LDA, &info);
+            if (!info) {
+                // make_symmetric_@TYPE@_matrix(params.UPLO, params.N, params.A);
+                delinearize_@TYPE@_matrix(args[1], params.A, &r_out);
+            } else {
+                error_occurred = 1;
+                nan_@TYPE@_matrix(args[1], &r_out);
+            }
+        END_OUTER_LOOP
+
+        release_@lapack_func@(&params);
+    }
+
+    set_fp_invalid_or_clear(error_occurred);
+}
+
+static void
+@TYPE@_inv_lower_triangular_non_unit_diagonal(char **args,
+                                              npy_intp *dimensions,
+                                              npy_intp *steps,
+                                              void *NPY_UNUSED(func))
+{
+    @TYPE@_inv_triangular('L', 'N', args, dimensions, steps);
+}
+
+static void
+@TYPE@_inv_lower_triangular_unit_diagonal(char **args,
+                                          npy_intp *dimensions,
+                                          npy_intp *steps,
+                                          void *NPY_UNUSED(func))
+{
+    @TYPE@_inv_triangular('L', 'U', args, dimensions, steps);
+}
+
+static void
+@TYPE@_inv_upper_triangular_non_unit_diagonal(char **args,
+                                              npy_intp *dimensions,
+                                              npy_intp *steps,
+                                              void *NPY_UNUSED(func))
+{
+    @TYPE@_inv_triangular('U', 'N', args, dimensions, steps);
+}
+
+static void
+@TYPE@_inv_upper_triangular_unit_diagonal(char **args,
+                                          npy_intp *dimensions,
+                                          npy_intp *steps,
+                                          void *NPY_UNUSED(func))
+{
+    @TYPE@_inv_triangular('U', 'U', args, dimensions, steps);
+}
+
+/**end repeat**/
+
+/* -------------------------------------------------------------------------- */
+             /* solve_triangular (using trtrs) */
+
+typedef struct trtrs_params_struct {
+    void *A;
+    void *B;
+    fortran_int N;
+    fortran_int LDA;
+    fortran_int LDB;
+} TRTRS_PARAMS_t;
+
+/**begin repeat
+   #TYPE=FLOAT,DOUBLE,CFLOAT,CDOUBLE#
+   #ftyp=float,double,COMPLEX_t,DOUBLECOMPLEX_t#
+   #lapack_func=strtrs,dtrtrs,ctrtrs,ztrtrs#
+ */
+
+static inline int
+init_@lapack_func@(TRTRS_PARAMS_t *params,
+                   fortran_int    N,
+                   fortran_int    NRHS)
+{
+    npy_uint8 *mem_buff = NULL;
+    npy_uint8 *a, *b;
+    size_t a_size, b_size;
+
+    a_size = N * N * sizeof(@ftyp@);
+    b_size = N * NRHS * sizeof(@ftyp@);
+    mem_buff = malloc(a_size + b_size);
+    if (!mem_buff) {
+        free(mem_buff);
+        memset(params, 0, sizeof(*params));
+
+        return 0;
+    }
+
+    a = mem_buff;
+    b = a + a_size;
+
+    params->A = (void*)a;
+    params->B = (void*)b;
+    params->N = N;
+    params->LDA = N;
+    params->LDB = N;
+
+    return 1;
+}
+
+static inline void
+release_@lapack_func@(TRTRS_PARAMS_t *params)
+{
+    free(params->A);
+    memset(params,0,sizeof(*params));
+    return;
+}
+
+/*
+ * solve_triangular uses LAPACK _trtrs method to solve:
+ *   A * X = B
+ *   A.T * X = B
+ *   A.H * X = B.
+ * As it takes many parameters, describing them below for easier
+ * understanding:
+ *   ndim:  1   - Get nrhs from dimensions (matrix), 0 - Use 1 (vector)
+ *   uplo:  'U' - A is upper triangular matrix. 'L' - Lower triangular.
+ *   trans: 'N' - No transpose), 'T' - Transpose, 'C' - Conjugate transpose.
+ *   diag:  'N' - A is non-unit triangular, 'U' - A is unit triangular.
+ */
+static void
+@TYPE@_solve_triangular(char ndim, char uplo,
+                        char trans, char diag,
+                        char **args, npy_intp *dimensions,
+                        npy_intp* steps)
+{
+    TRTRS_PARAMS_t params;
+    int error_occurred = get_fp_invalid_and_clear();
+    fortran_int n, nrhs;
+    INIT_OUTER_LOOP_3
+
+    n = (fortran_int)dimensions[0];
+    nrhs = ndim?(fortran_int)dimensions[1]:1;
+
+    if (init_@lapack_func@(&params, n, nrhs)) {
+        LINEARIZE_DATA_t a_in, b_in, r_out;
+
+        init_linearize_data(&a_in, n, n, steps[1], steps[0]);
+        if (ndim) {
+            init_linearize_data(&b_in,  nrhs, n, steps[3], steps[2]);
+            init_linearize_data(&r_out, nrhs, n, steps[5], steps[4]);
+        } else {
+            init_linearize_data(&b_in,  1, n, 0, steps[2]);
+            init_linearize_data(&r_out, 1, n, 0, steps[3]);
+        }
+
+        BEGIN_OUTER_LOOP_3
+            int info;
+            linearize_@TYPE@_matrix(params.A, args[0], &a_in);
+            linearize_@TYPE@_matrix(params.B, args[1], &b_in);
+            LAPACK(@lapack_func@)(&uplo, &trans, &diag,
+                                  &params.N, &nrhs,
+                                  params.A, &params.LDA,
+                                  params.B, &params.LDB,
+                                  &info);
+
+            if (!info) {
+                delinearize_@TYPE@_matrix(args[2], params.B, &r_out);
+            } else {
+                error_occurred = 1;
+                nan_@TYPE@_matrix(args[2], &r_out);
+            }
+        END_OUTER_LOOP
+
+        release_@lapack_func@(&params);
+    }
+
+    set_fp_invalid_or_clear(error_occurred);
+}
+
+#define SOLVE_TRIANGULAR(NDIM, UPLO, TRANS, DIAG)                \
+static void                                                      \
+@TYPE@_solve_triangular_ ## NDIM ## UPLO ## TRANS ##DIAG(        \
+    char **args,                                                 \
+    npy_intp *dimensions,                                        \
+    npy_intp* steps,                                             \
+    void *NPY_UNUSED(func))                                      \
+{                                                                \
+    @TYPE@_solve_triangular(NDIM, (#UPLO)[0], (#TRANS)[0],       \
+                           (#DIAG)[0], args, dimensions, steps); \
+}
+
+SOLVE_TRIANGULAR(0, L, N, N)
+SOLVE_TRIANGULAR(0, L, N, U)
+SOLVE_TRIANGULAR(0, L, T, N)
+SOLVE_TRIANGULAR(0, L, T, U)
+SOLVE_TRIANGULAR(0, L, C, N)
+SOLVE_TRIANGULAR(0, L, C, U)
+SOLVE_TRIANGULAR(0, U, N, N)
+SOLVE_TRIANGULAR(0, U, N, U)
+SOLVE_TRIANGULAR(0, U, T, N)
+SOLVE_TRIANGULAR(0, U, T, U)
+SOLVE_TRIANGULAR(0, U, C, N)
+SOLVE_TRIANGULAR(0, U, C, U)
+SOLVE_TRIANGULAR(1, L, N, N)
+SOLVE_TRIANGULAR(1, L, N, U)
+SOLVE_TRIANGULAR(1, L, T, N)
+SOLVE_TRIANGULAR(1, L, T, U)
+SOLVE_TRIANGULAR(1, L, C, N)
+SOLVE_TRIANGULAR(1, L, C, U)
+SOLVE_TRIANGULAR(1, U, N, N)
+SOLVE_TRIANGULAR(1, U, N, U)
+SOLVE_TRIANGULAR(1, U, T, N)
+SOLVE_TRIANGULAR(1, U, T, U)
+SOLVE_TRIANGULAR(1, U, C, N)
+SOLVE_TRIANGULAR(1, U, C, U)
+
+#undef SOLVE_TRIANGULAR
+
+/**end repeat**/
+
+/* -------------------------------------------------------------------------- */
                  /* poinv  */
 
 typedef struct potri_params_struct {
@@ -4332,6 +5540,9 @@ GUFUNC_FUNC_ARRAY_REAL_COMPLEX(inner1d);
 GUFUNC_FUNC_ARRAY_REAL_COMPLEX(dotc1d);
 GUFUNC_FUNC_ARRAY_REAL_COMPLEX(innerwt);
 GUFUNC_FUNC_ARRAY_REAL_COMPLEX(matrix_multiply);
+GUFUNC_FUNC_ARRAY_REAL_COMPLEX(matvec_multiply);
+GUFUNC_FUNC_ARRAY_REAL_COMPLEX(update_rank1);
+GUFUNC_FUNC_ARRAY_REAL_COMPLEX(update_rank1_conjugate);
 GUFUNC_FUNC_ARRAY_REAL_COMPLEX(slogdet);
 GUFUNC_FUNC_ARRAY_REAL_COMPLEX(det);
 GUFUNC_FUNC_ARRAY_REAL_COMPLEX(eighlo);
@@ -4341,8 +5552,16 @@ GUFUNC_FUNC_ARRAY_REAL_COMPLEX(eigvalshup);
 GUFUNC_FUNC_ARRAY_REAL_COMPLEX(solve);
 GUFUNC_FUNC_ARRAY_REAL_COMPLEX(solve1);
 GUFUNC_FUNC_ARRAY_REAL_COMPLEX(inv);
+GUFUNC_FUNC_ARRAY_REAL_COMPLEX(inv_lower_triangular_non_unit_diagonal);
+GUFUNC_FUNC_ARRAY_REAL_COMPLEX(inv_lower_triangular_unit_diagonal);
+GUFUNC_FUNC_ARRAY_REAL_COMPLEX(inv_upper_triangular_non_unit_diagonal);
+GUFUNC_FUNC_ARRAY_REAL_COMPLEX(inv_upper_triangular_unit_diagonal);
 GUFUNC_FUNC_ARRAY_REAL_COMPLEX(cholesky_up);
 GUFUNC_FUNC_ARRAY_REAL_COMPLEX(cholesky_lo);
+GUFUNC_FUNC_ARRAY_REAL_COMPLEX(lu);
+GUFUNC_FUNC_ARRAY_REAL_COMPLEX(lu_permute);
+GUFUNC_FUNC_ARRAY_REAL_COMPLEX(qr_m);
+GUFUNC_FUNC_ARRAY_REAL_COMPLEX(qr_n);
 GUFUNC_FUNC_ARRAY_REAL_COMPLEX(svd_N);
 GUFUNC_FUNC_ARRAY_REAL_COMPLEX(svd_S);
 GUFUNC_FUNC_ARRAY_REAL_COMPLEX(svd_A);
@@ -4363,6 +5582,38 @@ GUFUNC_FUNC_ARRAY_REAL_COMPLEX(chosolve1_lo);
 GUFUNC_FUNC_ARRAY_REAL_COMPLEX(ldl_entry);
 GUFUNC_FUNC_ARRAY_REAL_COMPLEX(poinv_up);
 GUFUNC_FUNC_ARRAY_REAL_COMPLEX(poinv_lo);
+
+/**
+ * solve_triangular has large number of methods for each data type, use
+ * C macro to define them.
+ */
+#define GUFUNC_FUNC_ARRAY_SOLVE_TRIANGULAR(NDIM, UPLO, TRANS, DIAG) \
+GUFUNC_FUNC_ARRAY_REAL_COMPLEX(solve_triangular_ ## NDIM ## UPLO ## TRANS ## DIAG);
+
+GUFUNC_FUNC_ARRAY_SOLVE_TRIANGULAR(0, L, N, N)
+GUFUNC_FUNC_ARRAY_SOLVE_TRIANGULAR(0, L, N, U)
+GUFUNC_FUNC_ARRAY_SOLVE_TRIANGULAR(0, L, T, N)
+GUFUNC_FUNC_ARRAY_SOLVE_TRIANGULAR(0, L, T, U)
+GUFUNC_FUNC_ARRAY_SOLVE_TRIANGULAR(0, L, C, N)
+GUFUNC_FUNC_ARRAY_SOLVE_TRIANGULAR(0, L, C, U)
+GUFUNC_FUNC_ARRAY_SOLVE_TRIANGULAR(0, U, N, N)
+GUFUNC_FUNC_ARRAY_SOLVE_TRIANGULAR(0, U, N, U)
+GUFUNC_FUNC_ARRAY_SOLVE_TRIANGULAR(0, U, T, N)
+GUFUNC_FUNC_ARRAY_SOLVE_TRIANGULAR(0, U, T, U)
+GUFUNC_FUNC_ARRAY_SOLVE_TRIANGULAR(0, U, C, N)
+GUFUNC_FUNC_ARRAY_SOLVE_TRIANGULAR(0, U, C, U)
+GUFUNC_FUNC_ARRAY_SOLVE_TRIANGULAR(1, L, N, N)
+GUFUNC_FUNC_ARRAY_SOLVE_TRIANGULAR(1, L, N, U)
+GUFUNC_FUNC_ARRAY_SOLVE_TRIANGULAR(1, L, T, N)
+GUFUNC_FUNC_ARRAY_SOLVE_TRIANGULAR(1, L, T, U)
+GUFUNC_FUNC_ARRAY_SOLVE_TRIANGULAR(1, L, C, N)
+GUFUNC_FUNC_ARRAY_SOLVE_TRIANGULAR(1, L, C, U)
+GUFUNC_FUNC_ARRAY_SOLVE_TRIANGULAR(1, U, N, N)
+GUFUNC_FUNC_ARRAY_SOLVE_TRIANGULAR(1, U, N, U)
+GUFUNC_FUNC_ARRAY_SOLVE_TRIANGULAR(1, U, T, N)
+GUFUNC_FUNC_ARRAY_SOLVE_TRIANGULAR(1, U, T, U)
+GUFUNC_FUNC_ARRAY_SOLVE_TRIANGULAR(1, U, C, N)
+GUFUNC_FUNC_ARRAY_SOLVE_TRIANGULAR(1, U, C, U)
 
 static char equal_2_types[] = {
     NPY_FLOAT, NPY_FLOAT,
@@ -4505,6 +5756,34 @@ static GUFUNC_DESCRIPTOR_t gufunc_descriptors [] = {
         equal_3_types
     },
     {
+        "matvec_multiply",
+        "(m,n),(n)->(m)",
+        "dot on the last two dimensions and broadcast on the rest \n"\
+        "    \"(m,n),(n)->(m)\" \n",
+        4, 2, 1,
+        FUNC_ARRAY_NAME(matvec_multiply),
+        equal_3_types
+    },
+    {
+        "update_rank1",
+        "(m),(n),(m,n)->(m,n)",
+        "rank1 update on last three dimensions and broadcast on the rest \n"\
+        "    \"(m),(n),(m,n)->(m,n)\" \n",
+        4, 3, 1,
+        FUNC_ARRAY_NAME(update_rank1),
+        equal_4_types
+    },
+    {
+        "update_rank1_conjugate",
+        "(m),(n),(m,n)->(m,n)",
+        "rank1 update on last three dimensions and broadcast on the rest. \n"\
+        "For complex numbers, uses conjugate transpose internally. \n"\
+        "    \"(m),(n),(m,n)->(m,n)\" \n",
+        4, 3, 1,
+        FUNC_ARRAY_NAME(update_rank1_conjugate),
+        equal_4_types
+    },
+    {
         "slogdet",
         "(m,m)->(),()",
         "slogdet on the last two dimensions and broadcast on the rest. \n"\
@@ -4604,6 +5883,83 @@ static GUFUNC_DESCRIPTOR_t gufunc_descriptors [] = {
         4,1,1,
         FUNC_ARRAY_NAME(inv),
         equal_2_types
+    },
+#define INV_TRIANGULAR_DESC(UPLO, DIAGONAL_TYPE, DIAGONAL_DESC)               \
+    {                                                                         \
+        "inv_" #UPLO "_triangular_" #DIAGONAL_TYPE "_diagonal",               \
+        "(m,m)->(m,m)",                                                       \
+        "compute the inverse of the last two dimensions and broadcast to the "\
+        "rest for " #DIAGONAL_TYPE " triangular " #DIAGONAL_DESC " diagonal " \
+        "matrix. \n Results in the inverse matrices. \n"                      \
+        "    \"(m,m)->(m,m)\" \n",                                            \
+        4,1,1,                                                                \
+        FUNC_ARRAY_NAME(inv_##UPLO##_triangular_##DIAGONAL_TYPE##_diagonal),  \
+        equal_2_types                                                         \
+    },
+
+INV_TRIANGULAR_DESC(lower, non_unit, non-unit)
+INV_TRIANGULAR_DESC(lower, unit, unit)
+INV_TRIANGULAR_DESC(upper, non_unit, non-unit)
+INV_TRIANGULAR_DESC(upper, unit, unit)
+    {
+        "lu_m",
+        "(m,n)->(m,m),(m,m),(m,n)",
+        "Compute LU factorization of a M-by-N matrix using partial "\
+        "pivoting and broadcast to all outer dimensions. \n"\
+        "    \"(m,n)->(m, m),(m,m),(m,n)\" \n",
+        4, 1, 3,
+        FUNC_ARRAY_NAME(lu),
+        equal_4_types
+    },
+    {
+        "lu_n",
+        "(m,n)->(m,m),(m,n),(n,n)",
+        "Compute LU factorization of a M-by-N matrix using partial "\
+        "pivoting and broadcast to all outer dimensions. \n"\
+        "    \"(m,n)->(m, m),(m,n),(n,n)\" \n",
+        4, 1, 3,
+        FUNC_ARRAY_NAME(lu),
+        equal_4_types
+    },
+    {
+        "lu_permute_m",
+        "(m,n)->(m,m),(m,n)",
+        "Compute LU factorization of a M-by-N matrix using partial "\
+        "pivoting and broadcast to all outer dimensions. \n"\
+        "    \"(m,n)->(m,m),(m,n)\" \n",
+        4, 1, 2,
+        FUNC_ARRAY_NAME(lu_permute),
+        equal_3_types
+    },
+    {
+        "lu_permute_n",
+        "(m,n)->(m,n),(n,n)",
+        "Compute LU factorization of a M-by-N matrix using partial "\
+        "pivoting and broadcast to all outer dimensions. \n"\
+        "    \"(m,n)->(m,n),(n,n)\" \n",
+        4, 1, 2,
+        FUNC_ARRAY_NAME(lu_permute),
+        equal_3_types
+    },
+    {
+        "qr_m",
+        "(m,n)->(m,m),(m,n)",
+        "Compute QR factorization of a M-by-N matrix "\
+        "and broadcast to all outer dimensions. \n"\
+        "    \"(m,n)->(m,m),(m,n)\" \n",
+        4, 1, 2,
+        FUNC_ARRAY_NAME(qr_m),
+        equal_3_types
+    },
+    {
+        "qr_n",
+        "(m,n)->(m,n),(n,n)",
+        "Compute QR factorization of a M-by-N matrix "\
+        "and broadcast to all outer dimensions. \n"\
+        "    \"(m,n)->(m,n),(n,n)\" \n",
+        4, 1, 2,
+        FUNC_ARRAY_NAME(qr_n),
+        equal_3_types
     },
     {
         "cholesky_up",
@@ -4808,6 +6164,57 @@ static GUFUNC_DESCRIPTOR_t gufunc_descriptors [] = {
         FUNC_ARRAY_NAME(chosolve1_lo),
         equal_3_types
     },
+
+#define SOLVE_TRIANGULAR_1_DESC(UPLO, TRANS, DIAG)                            \
+    {                                                                         \
+        "solve_triangular_1" #UPLO #TRANS #DIAG,                              \
+        "(m,m),(m,n)->(m,n)",                                                 \
+        "solve the system a x = b, where a is lower or upper triangular "     \
+        "matrix, on the last two dimensions, broadcasts to the rest.\nResults"\
+        " in a matrix with the solution:\n \"(m,m),(m,n)->(m,n)\" \n",        \
+        4, 2, 1,                                                              \
+        FUNC_ARRAY_NAME(solve_triangular_1##UPLO##TRANS##DIAG),               \
+        equal_3_types                                                         \
+    },
+
+SOLVE_TRIANGULAR_1_DESC(L, N, N)
+SOLVE_TRIANGULAR_1_DESC(L, N, U)
+SOLVE_TRIANGULAR_1_DESC(L, T, N)
+SOLVE_TRIANGULAR_1_DESC(L, T, U)
+SOLVE_TRIANGULAR_1_DESC(L, C, N)
+SOLVE_TRIANGULAR_1_DESC(L, C, U)
+SOLVE_TRIANGULAR_1_DESC(U, N, N)
+SOLVE_TRIANGULAR_1_DESC(U, N, U)
+SOLVE_TRIANGULAR_1_DESC(U, T, N)
+SOLVE_TRIANGULAR_1_DESC(U, T, U)
+SOLVE_TRIANGULAR_1_DESC(U, C, N)
+SOLVE_TRIANGULAR_1_DESC(U, C, U)
+
+#define SOLVE_TRIANGULAR_0_DESC(UPLO, TRANS, DIAG)                            \
+    {                                                                         \
+        "solve_triangular_0" #UPLO #TRANS #DIAG,                              \
+        "(m,m),(m)->(m)",                                                     \
+        "solve the system a x = b, where a is lower or upper triangular "     \
+        "matrix, on the last two dimensions, broadcasts to the rest.\nResults"\
+        " in a matrix with the solution:\n \"(m,m),(m)->(m)\" \n",            \
+        4,2,1,                                                                \
+        FUNC_ARRAY_NAME(solve_triangular_0##UPLO##TRANS##DIAG),               \
+        equal_3_types                                                         \
+    },
+
+SOLVE_TRIANGULAR_0_DESC(L, N, N)
+SOLVE_TRIANGULAR_0_DESC(L, N, U)
+SOLVE_TRIANGULAR_0_DESC(L, T, N)
+SOLVE_TRIANGULAR_0_DESC(L, T, U)
+SOLVE_TRIANGULAR_0_DESC(L, C, N)
+SOLVE_TRIANGULAR_0_DESC(L, C, U)
+SOLVE_TRIANGULAR_0_DESC(U, N, N)
+SOLVE_TRIANGULAR_0_DESC(U, N, U)
+SOLVE_TRIANGULAR_0_DESC(U, T, N)
+SOLVE_TRIANGULAR_0_DESC(U, T, U)
+SOLVE_TRIANGULAR_0_DESC(U, C, N)
+SOLVE_TRIANGULAR_0_DESC(U, C, U)
+
     {   /* inverse using cholesky decomposition (lapack potri) */
         "poinv_up",
         "(m,m)->(m,m)",
