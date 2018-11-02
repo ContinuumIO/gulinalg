@@ -4,9 +4,10 @@ matrix, that leads to various combinations of matrices to test.
 """
 
 from __future__ import print_function
-from unittest import TestCase
+from unittest import TestCase, skipIf
 import numpy as np
 from numpy.testing import run_module_suite, assert_allclose
+from pkg_resources import parse_version
 import gulinalg
 
 M = 75
@@ -75,6 +76,36 @@ class TestMatvecMultiplyNoCopy(TestCase):
         """Test for complex numbers input."""
         a = np.array([[1 + 2j, 3 + 4j], [5 + 6j, 7 + -8j]])
         b = np.array([1 - 2j, 4 + 5j])
+        res = gulinalg.matvec_multiply(a, b)
+        ref = np.dot(a, b)
+        assert_allclose(res, ref)
+
+    @skipIf(parse_version(np.__version__) < parse_version('1.13'),
+            "Prior to 1.13, numpy low level iterators didn't support removing "
+            "empty axis. So gufunc couldn't be called with empty inner loop")
+    def test_matvec_size_zero_matrix(self):
+        """Test matrix of size zero"""
+        a = np.random.randn(0, 2)
+        b = np.random.randn(2)
+        res = gulinalg.matvec_multiply(a, b)
+        ref = np.dot(a, b)
+        assert_allclose(res, ref)
+
+    @skipIf(parse_version(np.__version__) < parse_version('1.13'),
+            "Prior to 1.13, numpy low level iterators didn't support removing "
+            "empty axis. So gufunc couldn't be called with empty inner loop")
+    def test_matvec_size_zero_vector(self):
+        """Test vector of size zero"""
+        a = np.random.randn(2, 0)
+        b = np.random.randn(0)
+        res = gulinalg.matvec_multiply(a, b)
+        ref = np.dot(a, b)
+        assert_allclose(res, ref)
+
+    def test_matvec_size_one_vector(self):
+        """Test vector of size one"""
+        a = np.random.randn(1, 1)
+        b = np.random.randn(1)
         res = gulinalg.matvec_multiply(a, b)
         ref = np.dot(a, b)
         assert_allclose(res, ref)
@@ -187,6 +218,39 @@ class TestMatvecMultiplyVector(TestCase):
         res = gulinalg.matvec_multiply(a, b)
         assert_allclose(res, ref)
 
+    @skipIf(parse_version(np.__version__) < parse_version('1.13'),
+            "Prior to 1.13, numpy low level iterators didn't support removing "
+            "empty axis. So gufunc couldn't be called with empty inner loop")
+    def test_size_zero_vector(self):
+        """Test broadcasting for vector of size zero"""
+        a = np.ascontiguousarray(np.random.randn(10, 2, 0))
+        b = np.ascontiguousarray(np.random.randn(10, 0))
+        res = gulinalg.matvec_multiply(a, b)
+        assert res.shape == (10, 2)
+        ref = np.stack([np.dot(a[i], b[i]) for i in range(len(a))])
+        assert_allclose(res, ref)
+
+    @skipIf(parse_version(np.__version__) < parse_version('1.13'),
+            "Prior to 1.13, numpy low level iterators didn't support removing "
+            "empty axis. So gufunc couldn't be called with empty inner loop")
+    def test_size_zero_matrix(self):
+        """Test broadcasting for matrix of size zero"""
+        a = np.ascontiguousarray(np.random.randn(10, 0, 2))
+        b = np.ascontiguousarray(np.random.randn(10, 2))
+        res = gulinalg.matvec_multiply(a, b)
+        assert res.shape == (10, 0)
+        ref = np.stack([np.dot(a[i], b[i]) for i in range(len(a))])
+        assert_allclose(res, ref)
+
+    def test_size_one_vector(self):
+        """Test broadcasting for vector of size one"""
+        a = np.ascontiguousarray(np.random.randn(10, 1, 1))
+        b = np.ascontiguousarray(np.random.randn(10, 1))
+        res = gulinalg.matvec_multiply(a, b)
+        assert res.shape == (10, 1)
+        ref = np.stack([np.dot(a[i], b[i]) for i in range(len(a))])
+        assert_allclose(res, ref)
+
 
 class TestUpdateRank1Copy(TestCase):
     """
@@ -267,6 +331,39 @@ class TestUpdateRank1Copy(TestCase):
         res = np.zeros((3, 4), order='F')
         gulinalg.update_rank1(a, b, c, out=res)
         ref = np.dot(a.reshape(3, 1), b.reshape(1, 4)) + c
+        assert_allclose(res, ref)
+
+    @skipIf(parse_version(np.__version__) < parse_version('1.13'),
+            "Prior to 1.13, numpy low level iterators didn't support removing "
+            "empty axis. So gufunc couldn't be called with empty inner loop")
+    def test_size_zero_vector(self):
+        """Test vector input of size zero"""
+        a = np.zeros(1)
+        b = np.zeros(0)
+        c = np.ascontiguousarray(np.random.randn(1, 0))
+        res = gulinalg.update_rank1(a, b, c)
+        ref = np.dot(np.zeros((1, 0)), np.zeros((0, 0))) + c
+        assert_allclose(res, ref)
+
+    @skipIf(parse_version(np.__version__) < parse_version('1.13'),
+            "Prior to 1.13, numpy low level iterators didn't support removing "
+            "empty axis. So gufunc couldn't be called with empty inner loop")
+    def test_size_zero_matrix(self):
+        """Test matrix input of size zero"""
+        a = np.zeros(0)
+        b = np.zeros(2)
+        c = np.full((0, 2), np.nan)
+        res = gulinalg.update_rank1(a, b, c)
+        ref = np.dot(np.zeros((0, 0)), np.zeros((0, 2))) + c
+        assert_allclose(res, ref)
+
+    def test_size_one_vector(self):
+        """Test vector inputs of size one"""
+        a = np.random.randn(1)
+        b = np.random.randn(1)
+        c = np.ascontiguousarray(np.random.randn(1, 1))
+        res = gulinalg.update_rank1(a, b, c)
+        ref = np.dot(a.reshape(1, 1), b.reshape(1, 1)) + c
         assert_allclose(res, ref)
 
 
@@ -362,6 +459,45 @@ class TestUpdateRank1Vector(TestCase):
         ref = np.array([[[4, 6], [9, 12]],
                         [[4, 6], [np.inf, np.inf]]])
         res = gulinalg.update_rank1(a, b, c)
+        assert_allclose(res, ref)
+
+    @skipIf(parse_version(np.__version__) < parse_version('1.13'),
+            "Prior to 1.13, numpy low level iterators didn't support removing "
+            "empty axis. So gufunc couldn't be called with empty inner loop")
+    def test_size_zero_vector(self):
+        """Test broadcasting for matrix input of size zero"""
+        a = np.ascontiguousarray(np.random.randn(10, 1))
+        b = np.ascontiguousarray(np.random.randn(10, 0))
+        c = np.ascontiguousarray(np.random.randn(10, 1, 0))
+        res = gulinalg.update_rank1(a, b, c)
+        assert res.shape == (10, 1, 0)
+        ref = np.stack([np.dot(np.zeros((1, 0)), np.zeros((0, 0))) + c[i]
+                        for i in range(len(c))])
+        assert_allclose(res, ref)
+
+    @skipIf(parse_version(np.__version__) < parse_version('1.13'),
+            "Prior to 1.13, numpy low level iterators didn't support removing "
+            "empty axis. So gufunc couldn't be called with empty inner loop")
+    def test_size_zero_matrix(self):
+        """Test broadcasting for matrix input of size zero"""
+        a = np.ascontiguousarray(np.random.randn(10, 0))
+        b = np.ascontiguousarray(np.random.randn(10, 2))
+        c = np.ascontiguousarray(np.random.randn(10, 0, 2))
+        res = gulinalg.update_rank1(a, b, c)
+        assert res.shape == (10, 0, 2)
+        ref = np.stack([np.dot(np.zeros((0, 0)), np.zeros((0, 2))) + c[i]
+                        for i in range(len(c))])
+        assert_allclose(res, ref)
+
+    def test_size_one_vector(self):
+        """Test broadcasting for vector inputs of size one"""
+        a = np.ascontiguousarray(np.random.randn(10, 1))
+        b = np.ascontiguousarray(np.random.randn(10, 1))
+        c = np.ascontiguousarray(np.random.randn(10, 1, 1))
+        res = gulinalg.update_rank1(a, b, c)
+        assert res.shape == (10, 1, 1)
+        ref = np.stack([np.dot(a[i].reshape(1, 1), b[i].reshape(1, 1)) + c[i]
+                        for i in range(len(c))])
         assert_allclose(res, ref)
 
 
