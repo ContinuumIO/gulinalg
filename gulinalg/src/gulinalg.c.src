@@ -1895,8 +1895,14 @@ static void
 
     m = (fortran_int) dimensions[0];
     n = (fortran_int) dimensions[1];
-    if (m == 0 || n == 0)
-        return; /* output array will be empty, as one of its inner dimensions will be 0 */
+
+    /*
+     * Signature of matvec is (m,n),(n)->(m), i.e. if m = 0, output will
+     * be empty. However, if n = 0, output will be zero array of shape m.
+     */
+    if (m == 0) {
+        return;
+    }
 
     size_t sot = sizeof(@typ@);
 
@@ -1912,10 +1918,26 @@ static void
         }
 
         BEGIN_OUTER_LOOP_3
-            /* Acutal flattening happens here. */
+            if (n == 0) {
+                /*
+                 * If n = 0, each output matrix will be zero filled
+                 * array of shape m.
+                 */
+                memset(args[2], 0, m*sizeof(@typ@));
+            }
+
+            /* Actual flattening happens here. */
             @typ@ *A = linearize_@TYPE@_matrix(params.A, args[0], &a_in);
-            fortran_int incx = steps[2] / sot;
-            fortran_int incy = steps[3] / sot;
+
+            /*
+             * If size of a vector is 1 (or matrix is 1x1), gufunc won't
+             * step along that dimension. The stride will be 0 for that
+             * dimension.
+             * Refer: https://docs.scipy.org/doc/numpy-1.15.1/reference/ufuncs.html#broadcasting
+             * GEMV exepcts positive incx and incy, so set that to 1.
+             */
+            fortran_int incx = steps[2] != 0 ? steps[2] / sot : 1;
+            fortran_int incy = steps[3] != 0 ? steps[3] / sot : 1;
 
             /*
              * Invoke Fortran function GEMV.
@@ -1928,6 +1950,7 @@ static void
                           (void*)args[1], &incx,
                           (void*)&@zero@, // beta = 0, same as matrix_multiply.
                           (void*)args[2], &incy);
+
         END_OUTER_LOOP
 
         release_gemv_params(&params);
@@ -2016,8 +2039,16 @@ static void
 
         BEGIN_OUTER_LOOP_4
             linearize_@TYPE@_matrix(params.A, args[2], &a_in);
-            fortran_int incx = steps[0] / sot;
-            fortran_int incy = steps[1] / sot;
+
+            /*
+             * If size of a vector is 1 (or matrix is 1x1), gufunc won't
+             * step along that dimension. The stride will be 0 for that
+             * dimension.
+             * Refer: https://docs.scipy.org/doc/numpy-1.15.1/reference/ufuncs.html#broadcasting
+             * GER expects positive incx and incy, so set that to 1.
+             */
+            fortran_int incx = steps[0] != 0 ? steps[0] / sot : 1;
+            fortran_int incy = steps[1] != 0 ? steps[1] / sot : 1;
 
             /*
              * To get rank1 update, invoke ger_ for real numbers and _gerc/_geru
@@ -3263,6 +3294,13 @@ static void
     fortran_int m, n;
     m = (fortran_int) dimensions[0];
     n = (fortran_int) dimensions[1];
+    /*
+     * If m = 0, all output matrices will be empty and no need to
+     * zero initialize them.
+     */
+    if (m == 0) {
+        return;
+    }
 
     if (init_getrf_func(&params, m, n, steps, sizeof(@ftyp@)))
     {
@@ -3505,6 +3543,15 @@ static void
     INIT_OUTER_LOOP_3
     m = (fortran_int) dimensions[0];
     n = (fortran_int) dimensions[1];
+
+    /*
+     * If m = 0, all output matrices will be empty and no need to
+     * zero initialize them.
+     */
+    if (m == 0) {
+        return;
+    }
+
     min_m_n = m < n ? m : n;
     k = min_m_n;
 
@@ -5122,6 +5169,11 @@ static inline void @TYPE@_inv_triangular(char uplo,
     INIT_OUTER_LOOP_2
 
     n = (fortran_int)dimensions[0];
+    /* output array will be empty, as one of its inner dimensions will be 0 */
+    if (n == 0) {
+        return;
+    }
+
     if (init_@lapack_func@(&params, n)) {
         LINEARIZE_DATA_t a_in, r_out;
 
@@ -5269,6 +5321,11 @@ static void
 
     n = (fortran_int)dimensions[0];
     nrhs = ndim?(fortran_int)dimensions[1]:1;
+
+    /* output array will be empty, as one of its inner dimensions will be 0 */
+    if (n == 0) {
+        return;
+    }
 
     if (init_@lapack_func@(&params, n, nrhs)) {
         LINEARIZE_DATA_t a_in, b_in, r_out;

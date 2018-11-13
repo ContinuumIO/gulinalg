@@ -3,9 +3,10 @@ Tests different implementations of solve functions.
 """
 
 from __future__ import print_function
-from unittest import TestCase
+from unittest import TestCase, skipIf
 import numpy as np
 from numpy.testing import run_module_suite, assert_allclose
+from pkg_resources import parse_version
 import gulinalg
 
 
@@ -119,6 +120,47 @@ class TestSolveTriangular(TestCase):
         x = gulinalg.solve_triangular(a, b, UPLO='U')
         assert_allclose(np.dot(a, x), b)
 
+    @skipIf(parse_version(np.__version__) < parse_version('1.13'),
+            "Prior to 1.13, numpy low level iterators didn't support removing "
+            "empty axis. So gufunc couldn't be called with empty inner loop")
+    def test_m_and_n_zero(self):
+        """Corner case of solving where m = 0 and n = 0"""
+        a = np.ascontiguousarray(np.random.randn(0, 0))
+        b = np.ascontiguousarray(np.random.randn(0, 0))
+        x = gulinalg.solve_triangular(a, b, UPLO='U')
+        assert x.shape == (0, 0)
+        assert_allclose(np.dot(a, x), b)
+
+    @skipIf(parse_version(np.__version__) < parse_version('1.13'),
+            "Prior to 1.13, numpy low level iterators didn't support removing "
+            "empty axis. So gufunc couldn't be called with empty inner loop")
+    def test_m_zero(self):
+        """Corner case of solving where m = 0"""
+        a = np.ascontiguousarray(np.random.randn(0, 0))
+        b = np.ascontiguousarray(np.random.randn(0, 2))
+        x = gulinalg.solve_triangular(a, b, UPLO='U')
+        assert x.shape == (0, 2)
+        assert_allclose(np.dot(a, x), b)
+
+    @skipIf(parse_version(np.__version__) < parse_version('1.13'),
+            "Prior to 1.13, numpy low level iterators didn't support removing "
+            "empty axis. So gufunc couldn't be called with empty inner loop")
+    def test_n_zero(self):
+        """Corner case of solving where n = 0"""
+        a = np.ascontiguousarray(np.random.randn(2, 2))
+        b = np.ascontiguousarray(np.random.randn(2, 0))
+        x = gulinalg.solve_triangular(a, b, UPLO='U')
+        assert x.shape == (2, 0)
+        assert_allclose(np.dot(a, x), b)
+
+    def test_size_one_matrices(self):
+        """Corner case of decomposing where m = 1 and n = 1"""
+        a = np.ascontiguousarray(np.random.randn(1, 1))
+        b = np.ascontiguousarray(np.random.randn(1, 1))
+        x = gulinalg.solve_triangular(a, b, UPLO='U')
+        assert x.shape == (1, 1)
+        assert_allclose(np.dot(a, x), b)
+
     def test_vector(self):
         """test vectorized solve triangular"""
         e = np.array([[1, 2, 3, 4], [0, 2, 3, 4], [0, 0, 3, 4], [0, 0, 0, 4]])
@@ -126,6 +168,51 @@ class TestSolveTriangular(TestCase):
         b = np.stack([np.array([[1, 0, 0], [0, 1, 0],
                                 [0, 0, 1], [0, 0, 0]]) for _ in range(10)])
         x = gulinalg.solve_triangular(a, b, UPLO='U')
+        res = np.stack([np.dot(a[i], x[i]) for i in range(len(a))])
+        assert_allclose(res, b)
+
+    @skipIf(parse_version(np.__version__) < parse_version('1.13'),
+            "Prior to 1.13, numpy low level iterators didn't support removing "
+            "empty axis. So gufunc couldn't be called with empty inner loop")
+    def test_vector_m_and_n_zero(self):
+        """Corner case of solving where m = 0 and n = 0"""
+        a = np.ascontiguousarray(np.random.randn(10, 0, 0))
+        b = np.ascontiguousarray(np.random.randn(10, 0, 0))
+        x = gulinalg.solve_triangular(a, b, UPLO='U')
+        assert x.shape == (10, 0, 0)
+        res = np.stack([np.dot(a[i], x[i]) for i in range(len(a))])
+        assert_allclose(res, b)
+
+    @skipIf(parse_version(np.__version__) < parse_version('1.13'),
+            "Prior to 1.13, numpy low level iterators didn't support removing "
+            "empty axis. So gufunc couldn't be called with empty inner loop")
+    def test_vector_m_zero(self):
+        """Corner case of solving where m = 0"""
+        a = np.ascontiguousarray(np.random.randn(10, 0, 0))
+        b = np.ascontiguousarray(np.random.randn(10, 0, 2))
+        x = gulinalg.solve_triangular(a, b, UPLO='U')
+        assert x.shape == (10, 0, 2)
+        res = np.stack([np.dot(a[i], x[i]) for i in range(len(a))])
+        assert_allclose(res, b)
+
+    @skipIf(parse_version(np.__version__) < parse_version('1.13'),
+            "Prior to 1.13, numpy low level iterators didn't support removing "
+            "empty axis. So gufunc couldn't be called with empty inner loop")
+    def test_vector_n_zero(self):
+        """Corner case of solving where n = 0"""
+        a = np.ascontiguousarray(np.random.randn(10, 2, 2))
+        b = np.ascontiguousarray(np.random.randn(10, 2, 0))
+        x = gulinalg.solve_triangular(a, b, UPLO='U')
+        assert x.shape == (10, 2, 0)
+        res = np.stack([np.dot(a[i], x[i]) for i in range(len(a))])
+        assert_allclose(res, b)
+
+    def test_vector_size_one_matrices(self):
+        """Corner case of solving where m = 1 and n = 1"""
+        a = np.ascontiguousarray(np.random.randn(10, 1, 1))
+        b = np.ascontiguousarray(np.random.randn(10, 1, 1))
+        x = gulinalg.solve_triangular(a, b, UPLO='U')
+        assert x.shape == (10, 1, 1)
         res = np.stack([np.dot(a[i], x[i]) for i in range(len(a))])
         assert_allclose(res, b)
 

@@ -3,9 +3,10 @@ Tests different implementations of inverse functions.
 """
 
 from __future__ import print_function
-from unittest import TestCase
+from unittest import TestCase, skipIf
 import numpy as np
 from numpy.testing import run_module_suite, assert_allclose
+from pkg_resources import parse_version
 import gulinalg
 
 
@@ -87,12 +88,50 @@ class TestInverseTriangular(TestCase):
         inva = gulinalg.inv_triangular(a)
         assert_allclose(np.dot(a, inva), np.identity(4))
 
+    @skipIf(parse_version(np.__version__) < parse_version('1.13'),
+            "Prior to 1.13, numpy low level iterators didn't support removing "
+            "empty axis. So gufunc couldn't be called with empty inner loop")
+    def test_m_zero(self):
+        """Corner case of inverting where m = 0"""
+        a = np.ascontiguousarray(np.random.randn(0, 0))
+        inva = gulinalg.inv_triangular(a)
+        assert inva.shape == (0, 0)
+        assert_allclose(np.dot(a, inva), np.identity(0))
+
+    def test_m_one(self):
+        """Corner case of inverting where m = 1"""
+        a = np.ascontiguousarray(np.random.randn(1, 1))
+        inva = gulinalg.inv_triangular(a)
+        assert inva.shape == (1, 1)
+        assert_allclose(np.dot(a, inva), np.identity(1))
+
     def test_vector(self):
         """test vectorized inverse triangular"""
         e = np.array([[3, 0, 0, 0], [2, 1, 0, 0], [1, 0, 1, 0], [1, 1, 1, 1]])
         a = np.stack([e for _ in range(10)])
         ref = np.stack([np.identity(4) for _ in range(len(a))])
         inva = gulinalg.inv_triangular(a)
+        res = np.stack([np.dot(a[i], inva[i]) for i in range(len(a))])
+        assert_allclose(res, ref)
+
+    @skipIf(parse_version(np.__version__) < parse_version('1.13'),
+            "Prior to 1.13, numpy low level iterators didn't support removing "
+            "empty axis. So gufunc couldn't be called with empty inner loop")
+    def test_vector_m_zero(self):
+        """Corner case of inverting matrices where m = 0"""
+        a = np.ascontiguousarray(np.random.randn(10, 0, 0))
+        ref = np.stack([np.identity(0) for _ in range(len(a))])
+        inva = gulinalg.inv_triangular(a)
+        assert inva.shape == (10, 0, 0)
+        res = np.stack([np.dot(a[i], inva[i]) for i in range(len(a))])
+        assert_allclose(res, ref)
+
+    def test_vector_m_one(self):
+        """Corner case of inverting matrices where m = 1"""
+        a = np.ascontiguousarray(np.random.randn(10, 1, 1))
+        ref = np.stack([np.identity(1) for _ in range(len(a))])
+        inva = gulinalg.inv_triangular(a)
+        assert inva.shape == (10, 1, 1)
         res = np.stack([np.dot(a[i], inva[i]) for i in range(len(a))])
         assert_allclose(res, ref)
 
