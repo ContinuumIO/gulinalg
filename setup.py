@@ -12,18 +12,11 @@ import versioneer
 
 
 BASE_PATH = 'gulinalg'
-VERSION_FILE_PATH = os.path.join(BASE_PATH, '_version.py')
 C_SRC_PATH = os.path.join(BASE_PATH, 'src')
 LAPACK_LITE_PATH = os.path.join(C_SRC_PATH, 'lapack_lite')
 
-versioneer.versionfile_source = VERSION_FILE_PATH
-versioneer.versionfile_build = VERSION_FILE_PATH
-versioneer.tag_prefix = ''
-versioneer.parentdir_prefix = 'gulinalg-'
-
 # Use information about the LAPACK library used in NumPy.
 # if not present, fallback to using the included lapack-lite
-
 
 MODULE_SOURCES = [os.path.join(C_SRC_PATH, 'gulinalg.c.src')]
 MODULE_DEPENDENCIES = copy.copy(MODULE_SOURCES)

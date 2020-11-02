@@ -1,2 +1,2 @@
 include README.md versioneer.py CHANGE_LOG LICENSE
-
+include gulinalg/_version.py
